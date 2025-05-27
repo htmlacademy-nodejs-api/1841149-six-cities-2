@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
 * Студент: [Григорий Лисица](https://up.htmlacademy.ru/nodejs-api-individual/2/user/1841149).
-* Наставник: `Неизвестно`.
+* Наставник: [Андрей Осипук](https://htmlacademy.ru/profile/id616431).
 
 ---
 
