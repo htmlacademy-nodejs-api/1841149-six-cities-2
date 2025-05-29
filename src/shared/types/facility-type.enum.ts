@@ -1,6 +1,6 @@
 export enum FacilityType {
-  'Breakfast' = 'Breakfast',
-  'Air conditioning'= 'Air conditioning',
+  Breakfast = 'Breakfast',
+  'Air conditioning' = 'Air conditioning',
   'Laptop friendly workspace' = 'Laptop friendly workspace',
   'Baby seat' = 'Baby seat',
   Washer = 'Washer',
