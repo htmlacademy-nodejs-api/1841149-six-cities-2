@@ -1,0 +1,125 @@
+{
+  "api": {
+    "names": [
+      "Современная студия",
+      "Трехэтажный дом с садом",
+      "Комната в центре города",
+      "Квартира на канале реки",
+      "Бутик-отель в центре города"
+    ],
+    "descriptions": [
+      "Уютная студия в 10 минутах ходьбы от центра; с кондиционером; стиральной машиной и современным ремонтом.",
+      "Просторный дом с 4 комнатами; частным садом и гаражом в тихом районе города. Идеально для семьи.",
+      "Небольшая, но светлая и чистая комната с общей кухней; расположенная рядом с площадью.",
+      "Двухкомнатная квартира с видом на канал; оборудована всем необходимым для комфортного проживания.",
+      "Элегантный номер в отеле в историческом центре города."
+    ],
+    "cities": [
+      "Paris",
+      "Cologne",
+      "Brussels",
+      "Amsterdam",
+      "Hamburg",
+      "Dusseldorf"
+    ],
+    "imagePreviews": [
+      "eiffel-studio.jpg",
+      "cologne-house.jpg",
+      "brussels-room.jpg",
+      "amsterdam-canal.jpg",
+      "hamburg-hotel.jpg"
+    ],
+    "photos": [
+      "hotel1.jpg",
+      "hotel2.jpg",
+      "hotel3.jpg",
+      "hotel4.jpg",
+      "hotel5.jpg",
+      "hotel6.jpg",
+      "ap1.jpg",
+      "ap2.jpg",
+      "ap3.jpg",
+      "ap4.jpg",
+      "ap5.jpg",
+      "ap6.jpg"
+    ],
+    "types": [
+      "apartment",
+      "house",
+      "room",
+      "hotel"
+    ],
+    "facilities": [
+      "Breakfast",
+      "Air conditioning",
+      "Laptop friendly workspace",
+      "Baby seat",
+      "Washer",
+      "Towels",
+      "Fridge"
+    ],
+    "authors": [
+      {
+        "name": "Жюль Мартен",
+        "email": "jules.martin@example.com",
+        "avatar": "jules.jpg",
+        "password": "paris123",
+        "userType": "pro"
+      },
+      {
+        "name": "Анна Беккер",
+        "email": "anna.b@example.com",
+        "avatar": "anna.png",
+        "password": "securePass",
+        "userType": "default"
+      },
+      {
+        "name": "Мишель Дюпон",
+        "email": "michel.dup@example.com",
+        "avatar": "dupon.png",
+        "password": "dupon1234",
+        "userType": "default"
+      },
+      {
+        "name": "Том Ван Дайк",
+        "email": "tom.vd@example.com",
+        "avatar": "tom.png",
+        "password": "canal789",
+        "userType": "pro"
+      },
+      {
+        "name": "Фридрих Мюллер",
+        "email": "friedrich.m@example.com",
+        "avatar": "mueller.jpg",
+        "password": "hburg123",
+        "userType": "pro"
+      }
+    ],
+    "coordinates": {
+      "Paris": {
+        "latitude": 48.85661,
+        "longitude": 2.351499
+      },
+      "Cologne": {
+        "latitude": 50.938361,
+        "longitude": 6.959974
+      },
+      "Brussels": {
+        "latitude": 50.846557,
+        "longitude": 4.351697
+      },
+      "Amsterdam": {
+        "latitude": 52.370216,
+        "longitude": 4.895168
+      },
+      "Hamburg": {
+        "latitude": 53.550341,
+        "longitude": 10.000654
+      },
+      "Dusseldorf": {
+        "latitude": 51.225402,
+        "longitude": 6.776314
+      }
+    }
+  }
+}
