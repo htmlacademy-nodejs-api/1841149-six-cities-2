@@ -22,7 +22,7 @@ export class GenerateCommand implements Command {
     const tsvFileWriter = new TSVFileWriter(filepath);
 
     for (let i = 0; i < rentalOfferCount; i++) {
-      await tsvFileWriter.write(tsvOfferGenerator.generate())
+      await tsvFileWriter.write(tsvOfferGenerator.generate());
     }
   }
 

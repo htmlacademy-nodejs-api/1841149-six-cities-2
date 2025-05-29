@@ -32,11 +32,10 @@ export function generateRentalOffer(rentalOfferData: string): RentalOffer {
     };
   };
 
-  const getFacilities = (facilitiesString: string): FacilityType[] => {
-    return facilitiesString
+  const getFacilities = (facilitiesString: string): FacilityType[] =>
+    facilitiesString
       .split(';')
       .map((facility) => FacilityType[facility as 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge']);
-  };
 
   const getCoordinates = (coordinatesString: string): Coordinates => {
     const [longitude, latitude] = coordinatesString.split(';');
