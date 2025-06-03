@@ -4,6 +4,7 @@
 /lib/
 /dist/
 /docs/
+/mocks/*.tsv
 .idea/*
 
 .DS_Store
