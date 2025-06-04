@@ -14,7 +14,7 @@ export function getRandomItems<T>(items: T[], count: number):T[] {
 }
 
 export function getRandomItem<T>(items: T[], min: number = 1):T {
-  return items[((Math.random() * (items.length - 1  - min)) + min)];
+  return items[((Math.random() * ((items.length - 1) - min)) + min)];
 }
 
 export function generateRandomBoolean() {

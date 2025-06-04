@@ -37,9 +37,9 @@ export function generateRentalOffer(rentalOfferData: string): RentalOffer {
     price: Number.parseInt(price, 10),
     facilities: facilities.split(';').map((facility) => FacilityType[facility as 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge']),
     author: ((): Author => {
-      const [name, email, avatar, password, userType] = author.split(';');
+      const [userName, email, avatar, password, userType] = author.split(';');
       return {
-        name,
+        name: userName,
         email,
         avatar,
         password,
@@ -48,11 +48,11 @@ export function generateRentalOffer(rentalOfferData: string): RentalOffer {
     })(),
     commentsCount: Number.parseInt(commentsCount, 10),
     coordinates: ((): Coordinates => {
-      const [longitude, latitude] = coordinates.split(';')
+      const [longitude, latitude] = coordinates.split(';');
       return {
         longitude: Number(longitude),
         latitude: Number(latitude)
-      }
+      };
     })(),
   };
 }
