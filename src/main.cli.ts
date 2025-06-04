@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { CliApp, HelpCommand, VersionCommand, ImportCommand, GenerateCommand } from './cli/index.js';
 
 function bootstrap() {

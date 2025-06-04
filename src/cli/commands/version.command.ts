@@ -1,8 +1,8 @@
 import { Command } from './command.interface.js';
 import { resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
-import chalk from 'chalk';
 import { getErrorMessage } from '../../shared/helpers/index.js';
+import chalk from 'chalk';
 
 type PackageJSONConfig = {
   version: string;

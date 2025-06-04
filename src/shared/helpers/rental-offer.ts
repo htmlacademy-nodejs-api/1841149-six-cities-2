@@ -21,30 +21,6 @@ export function generateRentalOffer(rentalOfferData: string): RentalOffer {
     coordinates
   ] = rentalOfferData.replace('\n', '').split('\t');
 
-  const getAuthor = (authorString: string): Author => {
-    const [userName, email, avatar, password, userType] = authorString.split(';');
-    return {
-      name: userName,
-      email,
-      avatar,
-      password,
-      userType: UserType[userType as UserType],
-    };
-  };
-
-  const getFacilities = (facilitiesString: string): FacilityType[] =>
-    facilitiesString
-      .split(';')
-      .map((facility) => FacilityType[facility as 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge']);
-
-  const getCoordinates = (coordinatesString: string): Coordinates => {
-    const [longitude, latitude] = coordinatesString.split(';');
-    return {
-      longitude: Number(longitude),
-      latitude: Number(latitude)
-    };
-  };
-
   return {
     name,
     description,
@@ -59,9 +35,24 @@ export function generateRentalOffer(rentalOfferData: string): RentalOffer {
     roomNumber: Number.parseInt(roomNumber, 10),
     guestNumber: Number.parseInt(guestNumber, 10),
     price: Number.parseInt(price, 10),
-    facilities: getFacilities(facilities),
-    author: getAuthor(author),
+    facilities: facilities.split(';').map((facility) => FacilityType[facility as 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge']),
+    author: ((): Author => {
+      const [name, email, avatar, password, userType] = author.split(';');
+      return {
+        name,
+        email,
+        avatar,
+        password,
+        userType: UserType[userType as UserType],
+      };
+    })(),
     commentsCount: Number.parseInt(commentsCount, 10),
-    coordinates: getCoordinates(coordinates),
+    coordinates: ((): Coordinates => {
+      const [longitude, latitude] = coordinates.split(';')
+      return {
+        longitude: Number(longitude),
+        latitude: Number(latitude)
+      }
+    })(),
   };
 }

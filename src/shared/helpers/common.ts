@@ -3,12 +3,18 @@ export function generateRandomValue(min:number, max: number, numAfterDigit = 0) 
 }
 
 export function getRandomItems<T>(items: T[], count: number):T[] {
-  const start = generateRandomValue(0, items.length - count);
-  return items.slice(start, start + count);
+  const shuffled = [...items];
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = generateRandomValue(0, i);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled.slice(0, count);
 }
 
-export function getRandomItem<T>(items: T[]):T {
-  return items[generateRandomValue(0, items.length - 1)];
+export function getRandomItem<T>(items: T[], min: number = 1):T {
+  return items[((Math.random() * (items.length - 1  - min)) + min)];
 }
 
 export function generateRandomBoolean() {
