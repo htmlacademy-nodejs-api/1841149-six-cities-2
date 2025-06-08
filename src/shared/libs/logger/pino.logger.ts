@@ -1,5 +1,5 @@
 import { Logger as PinoInstance, pino, transport } from 'pino';
-import { Logger } from "./logger.interface.js";
+import { Logger } from './logger.interface.js';
 import { getCurrentModuleDirectory } from '../../helpers/index.js';
 import { resolve } from 'node:path';
 import { injectable } from 'inversify';
@@ -27,24 +27,24 @@ export class PinoLogger implements Logger{
         }
       ]
 
-    })
+    });
 
     this.logger = pino({}, multiTransport);
   }
 
   public info(message: string, ...args: unknown[]): void {
     this.logger.info(message, ...args);
-  };
+  }
 
   public debug(message: string, ...args: unknown[]): void {
     this.logger.debug(message, ...args);
-  };
+  }
 
   public warn(message: string, ...args: unknown[]): void {
     this.logger.warn(message, ...args);
-  };
+  }
 
   public error(message: string,error: Error, ...args: unknown[]): void {
     this.logger.error(message, error, ...args);
-  };
+  }
 }

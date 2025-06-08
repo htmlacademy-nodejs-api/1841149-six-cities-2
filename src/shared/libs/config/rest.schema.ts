@@ -28,4 +28,4 @@ export const configRestSchema = convict<RestSchema>({
     env: 'SALT',
     default: null
   },
-})
+});
