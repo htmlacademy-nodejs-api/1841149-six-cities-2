@@ -35,7 +35,7 @@ export class OfferEntity {
   @prop({required: true })
   public imagePreview: string;
 
-  @prop({required: true, minlength: 6, maxlength: 6 })
+  @prop({required: true })
   public photos: string[];
 
   @prop({required: true })
@@ -51,7 +51,7 @@ export class OfferEntity {
     required: true,
     ref: TypeEntity
   })
-  public type: Ref<TypeEntity>;
+  public typeId: Ref<TypeEntity>;
 
   @prop({required: true, min: 1, max: 8})
   public roomNumber: number;
@@ -72,7 +72,7 @@ export class OfferEntity {
     required: true,
     ref: UserEntity
   })
-  public author: Ref<UserEntity>;
+  public authorId: Ref<UserEntity>;
 
   @prop({default: 0})
   public commentCount!: number;
@@ -81,7 +81,7 @@ export class OfferEntity {
     required: true,
     ref: CoordinateEntity
   })
-  public coordinates: Ref<CoordinateEntity>;
+  public coordinatesId: Ref<CoordinateEntity>;
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

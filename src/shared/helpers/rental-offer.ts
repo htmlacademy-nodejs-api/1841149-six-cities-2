@@ -22,12 +22,11 @@ export function generateRentalOffer(rentalOfferData: string): RentalOffer {
   ] = rentalOfferData.replace('\n', '').split('\t');
 
   const getAuthor = (authorString: string): Author => {
-    const [userName, email, avatar, password, userType] = authorString.split(';');
+    const [userName, email, avatar, userType] = authorString.split(';');
     return {
       name: userName,
       email,
       avatar,
-      password,
       userType: UserType[userType as UserType],
     };
   };

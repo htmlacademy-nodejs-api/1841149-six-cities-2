@@ -1,5 +1,3 @@
-import { Coordinates } from '../../../types/index.js';
-
 export class CreateOfferDto {
   name: string;
   description: string;
@@ -17,5 +15,5 @@ export class CreateOfferDto {
   facilities: string[];
   authorId: string;
   commentsCount: number;
-  coordinates: Coordinates;
+  coordinatesId: string;
 }

@@ -63,35 +63,30 @@
         "name": "Жюль Мартен",
         "email": "jules.martin@example.com",
         "avatar": "jules.jpg",
-        "password": "paris123",
         "userType": "pro"
       },
       {
         "name": "Анна Беккер",
         "email": "anna.b@example.com",
         "avatar": "anna.png",
-        "password": "securePass",
         "userType": "default"
       },
       {
         "name": "Мишель Дюпон",
         "email": "michel.dup@example.com",
         "avatar": "dupon.png",
-        "password": "dupon1234",
         "userType": "default"
       },
       {
         "name": "Том Ван Дайк",
         "email": "tom.vd@example.com",
         "avatar": "tom.png",
-        "password": "canal789",
         "userType": "pro"
       },
       {
         "name": "Фридрих Мюллер",
         "email": "friedrich.m@example.com",
         "avatar": "mueller.jpg",
-        "password": "hburg123",
         "userType": "pro"
       }
     ],

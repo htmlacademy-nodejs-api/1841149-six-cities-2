@@ -1,6 +1,6 @@
 import { Command } from './command.interface.js';
 import { TSVFileReader } from '../../shared/libs/file-reader/index.js';
-import {generateRentalOffer, getErrorMessage, getMongoURI} from '../../shared/helpers/index.js';
+import { generateRentalOffer, getErrorMessage, getMongoURI } from '../../shared/helpers/index.js';
 import { CoordinateModel, CoordinateService, DefaultCoordinateService } from '../../shared/modules/coordinate/index.js';
 import { DefaultFacilityService, FacilityModel, FacilityService } from '../../shared/modules/facility/index.js';
 import { DefaultOfferService, OfferModel, OfferService } from '../../shared/modules/offer/index.js';
@@ -8,7 +8,7 @@ import { DefaultTypeService, TypeModel, TypeService } from '../../shared/modules
 import { DefaultUserService, UserService, UserModel } from '../../shared/modules/user/index.js';
 import { DatabaseClient, MongoDatabaseClient } from '../../shared/libs/database-client/index.js';
 import { Logger, ConsoleLogger } from '../../shared/libs/logger/index.js';
-import {Author, Coordinates, FacilityType, RentalOffer, RentalOfferType} from '../../shared/types/index.js';
+import { RentalOffer } from '../../shared/types/index.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
 
 export class ImportCommand implements Command {
@@ -58,7 +58,9 @@ export class ImportCommand implements Command {
       facilities.push(existFacility.id);
     }
 
-    const offerType = await this.typeService.findByTypeNameOrCreate(offer.type, offer.type);
+    const offerType = await this.typeService.findByTypeNameOrCreate(offer.type, { name: offer.type });
+
+    const coordinates = await this.coordinateService.findByCoordinateNameOrCreate(offer.city, { name: offer.city, latitude: offer.coordinates.latitude, longitude: offer.coordinates.longitude});
 
     await this.offerService.create({
       facilities,
@@ -72,11 +74,11 @@ export class ImportCommand implements Command {
       isPremium: offer.isPremium,
       isFavourite: offer.isFavourite,
       rating: offer.rating,
-      typeId: '123',
+      typeId: offerType.id,
       roomNumber: offer.roomNumber,
       guestNumber: offer.guestNumber,
       price: offer.price,
-      coordinates: offer.coordinates,
+      coordinatesId: coordinates?.id,
       commentsCount: 0,
     });
   }

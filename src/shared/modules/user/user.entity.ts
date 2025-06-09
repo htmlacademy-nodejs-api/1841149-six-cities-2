@@ -23,7 +23,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements Author {
   @prop({ required: false, default: 'placeholder-avatar.png' })
   public avatar: string;
 
-  @prop({ required: true, minLength: 6, maxLength: 12, default: '' })
+  @prop({ required: true, default: '' })
   private password?: string;
 
   @prop({ required: true, enum: UserType })
