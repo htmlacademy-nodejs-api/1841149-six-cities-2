@@ -10,19 +10,21 @@ info:
 servers:
   - url: https://api.server.test/v1
 tags:
+  - name: auth
+    description: Действия с авторизацией.
   - name: offers
-    description: Действия с объявлениями.
-  - name: categories
-    description: Действия с категориями.
-  - name: comments
-    description: Действия с комментариями.
-  - name: users
-    description: Действия с пользователем.
+    description: Действия с предложениями.
+  - name: types
+    description: Действия с типами предложений.
+  - name: facilities
+    description: Действия с типами удобств.
+  - name: favorite
+    description: Действия с избранным.
 paths:
-  /users/register:
+  /auth/register:
     post:
       tags:
-        - users
+        - auth
       summary: Регистрация пользователя
       description: Регистрирует нового пользователя.
 
@@ -42,59 +44,883 @@ paths:
               schema:
                 $ref: '#/components/schemas/user'
 
+        "400":
+          description: Ошибка в корректности данных
+
         "409":
           description: Пользователь с таким email уже существует.
 
-  /users/login:
+  /auth/login:
     post:
       tags:
-        - users
+        - auth
       summary: Авторизация пользователя
       description: Авторизует пользователя на основе логина и пароля
 
+      requestBody:
+        description: Информация для авторизации пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginUser'
+        required: true
+
+      responses:
+        "200":
+          description: Пользователь авторизирован.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/successLogin'
+
+        "401":
+          description: Ошибка аутентификации
+
+  /auth/logout:
     get:
       tags:
-        - users
+        - auth
+      summary: Завершение сеанса пользователя
+      description: Завершает сеанс пользователя
+      security:
+        - BearerAuth: []
+
+      responses:
+        "200":
+          description: Сеанс завершен.
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+  /auth/status:
+    get:
+      tags:
+        - auth
       summary: Проверка состояния пользователя
       description: Возвращает информацию по авторизованному пользователю
+      security:
+        - BearerAuth: []
 
-  /users/{userId}/avatar:
+      responses:
+        "200":
+          description: Информация о пользователе.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Список предложений
+      description: |
+        Возвращает список предложений. <br>
+        Сортировка по дате публикации, от новых к старым. <br>
+        По умолчанию не больше 60. <br>
+        Комментарии не включены, для выдачи комментариев используйте другой метод <br>
+
+      parameters:
+        - name: limit
+          in: query
+          description: Максимальное количество возвращаемых предложений (по умолчанию 60)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 60
+
+      responses:
+        "200":
+          description: Массив объектов предложений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getOffer'
+
+        "400":
+          description: Ошибка в корректности данных
+
     post:
       tags:
-        - users
-      summary: Загрузить изображение аватара
-      description: Загружает изображение аватара пользователя. Изображение
-        аватара должно быть в формате `png` или `jpg`.
+        - offers
+      summary: Создание предложения
+      description: Создает новое предложение
+      security:
+        - BearerAuth: []
+
+      requestBody:
+        description: Информация для создания нового предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+        required: true
+
+      responses:
+        "201":
+          description: Предложение создано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+    patch:
+      tags:
+        - offers
+      summary: Редактирование предложения
+      description: Редактирует предложение созданное пользователем
+      security:
+        - BearerAuth: []
+
+      requestBody:
+        description: Информация для редактирования нового предложения. Должно присутствовать хотя бы одно поле
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editOffer'
+        required: true
+
+      responses:
+        "200":
+          description: Предложение успешно отредактировано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+        "403":
+          description: Вы пытаетесь изменить чужое предложение
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения
+      description: Удаление предложение созданное пользователем. Будут удалены все комментарии для этого предложения
+      security:
+        - BearerAuth: []
+
+      requestBody:
+        description: Информация для удаления предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/deleteOffer'
+        required: true
+
+      responses:
+        "200":
+          description: Предложение успешно удалено.
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+        "403":
+          description: Вы пытаетесь удалить чужое предложение
+
+  /offers/{city}/premium:
+    get:
+      tags:
+        - offers
+      summary: Список премиальных предложений для города
+      description: |
+        Возвращает список предложений. <br>
+        Возвращает не более 3 премиальных предложений. <br>
+        Список отсортирован по дате публикации (По убыванию)
+
+      responses:
+        "200":
+          description: Массив объектов премиальных предложений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getOffer'
+
+        "400":
+          description: Ошибка в корректности данных
+
+  /offers/{offerId}/comments:
+    get:
+      tags:
+        - offers
+      summary: Список комментариев к предложению
+      description: |
+        Получить список комментариев к предложению. <br>
+        Возвращает 50 или меньше комментариев. <br>
+        Сортировка по умолчанию от новых к старым
+
+      responses:
+        "200":
+          description: Массив объектов комментариев.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getComment'
+
+        "400":
+          description: Ошибка в корректности данных
+
+    post:
+      tags:
+        - offers
+      summary: Создание комментария
+      description: Создать комментарий к предложению
+      security:
+        - BearerAuth: []
+
+      requestBody:
+        description: Информация для создания нового предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createComment'
+        required: true
+
+      responses:
+        "201":
+          description: Комментарий успешно создан. Объект комментария.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+  /offers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Детальная информация по предложению
+      description: Возвращает детальную информацию о выбранном предложении.
+
+      responses:
+        "200":
+          description: Детальная информация по предложению.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Ошибка в корректности данных
+
+  /types:
+    get:
+      tags:
+        - types
+      summary: Список типов предложений
+      description: Возвращает список возможных типов предложений.
+
+      responses:
+        "200":
+          description: Массив объектов с типами предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/types'
+
+        "400":
+          description: Ошибка в корректности данных
+
+
+  /facilities:
+    get:
+      tags:
+        - facilities
+      summary: Список удобств предложений
+      description: Возвращает список возможных удобств предложений.
+
+      responses:
+        "200":
+          description: Массив объектов с удобствами предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/facilities'
+
+        "400":
+          description: Ошибка в корректности данных
+
+
+  /favorite:
+    get:
+      tags:
+        - favorite
+      summary: Получить список избранных предложений
+      description: Получить список избранных предложений пользователя
+      security:
+        - BearerAuth: []
+
+      responses:
+        "200":
+          description: Массив объектов избранных предложений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getOffer'
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+    post:
+      tags:
+        - favorite
+      summary: Добавить предложение в избранное
+      description: Добавить выбранное предложение в избранное
+      security:
+        - BearerAuth: []
+
+      requestBody:
+        description: Информация для добавления предложения в избранное.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/favoriteRequestBody'
+        required: true
+
+      responses:
+        "200":
+          description: Добавляет предложение в избранное.
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+    delete:
+      tags:
+        - favorite
+      summary: Удалить предложение из избранного
+      description: Удалить выбранное предложение из избранного
+      security:
+        - BearerAuth: []
+
+      requestBody:
+        description: Информация для удаления предложения из избранного.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/favoriteRequestBody'
+        required: true
+
+      responses:
+        "200":
+          description: Удаление предложения из избранного.
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
+
     createUser:
       type: object
 
       properties:
+        name:
+          type: string
+          description: Имя пользователя
+          example: Иван Иванов
+
         email:
           type: string
-          example: keks@htmlacademy.ru
+          description: Email пользователя
+          example: example@example.com
 
-        firstname:
+        avatar:
           type: string
-          example: Keks
-
-        lastname:
-          type: string
-          example: Cat
+          description: Ссылка на аватарку
+          example: 'example.com'
 
         password:
           type: string
           example: 123456
 
+    loginUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          description: Email пользователя
+          example: example@example.com
+
+        password:
+          type: string
+          description: Пароль пользователя
+          example: 123456
+
+    successLogin:
+      type: object
+
+      properties:
+        accessToken:
+          type: string
+          description: Токен авторизации
+          example: supersecret
+
     user:
       type: object
 
       properties:
-        id:
+        name:
           type: string
-          example: 6329c3d6a04ab1061c6425ea
+          description: Имя пользователя
+          example: Иван Иванов
 
         email:
           type: string
-          example: keks@htmlacademy.ru
+          description: Email пользователя
+          example: example@example.com
+
+        avatar:
+          type: string
+          description: Ссылка на аватарку
+          example: 'example.com'
+
+        type:
+          type: string
+          enum:
+            - default
+            - pro
+
+    createOffer:
+      type: object
+
+      properties:
+        name:
+          type: string
+          description: Наименование предложения
+          example: Сдаю 1-к комнатную квартиру
+          minLength: 10
+          maxLength: 100
+        description:
+          type: string
+          description: Описание предложения
+          example: Просторная квартира с видом на море
+          minLength: 20
+          maxLength: 1024
+        city:
+          type: string
+          description: Город. Один из возможных вариант из справочника городов.
+          example: Paris
+        imagePreview:
+          type: string
+          description: Ссылка на изображения для превью
+          example: https://example.com
+          format: uri
+        photos:
+          type: array
+          description: Список ссылок на фотографии жилья
+          example: ['https://example.com']
+          items:
+            type: string
+            format: uri
+          minItems: 6
+          maxItems: 6
+        isPremium:
+          type: boolean
+          description: Флаг для премиального предложения
+          example: true
+        type:
+          type: string
+          description: Тип жилья из справочника типов жилья
+          example: apartment
+        roomNumber:
+          type: number
+          description: Количество комнат
+          example: 1
+          minimum: 1
+          maximum: 8
+        guestNumber:
+          type: number
+          description: Количество гостей
+          example: 1
+          minimum: 1
+          maximum: 10
+        price:
+          type: number
+          description: Цена
+          minimum: 100
+          maximum: 100000
+        facilities:
+          type: array
+          description: Список удобств
+          example: ['Breakfast', 'Air conditioning']
+          items:
+            type: string
+          minItems: 1
+
+    editOffer:
+      type: object
+
+      anyOf:
+        - required: [name]
+        - required: [description]
+        - required: [city]
+        - required: [imagePreview]
+        - required: [photos]
+        - required: [isPremium]
+        - required: [type]
+        - required: [roomNumber]
+        - required: [guestNumber]
+        - required: [price]
+        - required: [facilities]
+
+      properties:
+        id:
+          type: number
+          description: ID редактируемого предложения
+          example: 123
+        name:
+          type: string
+          description: Наименование предложения
+          example: Сдаю 1-к комнатную квартиру
+          minLength: 10
+          maxLength: 100
+        description:
+          type: string
+          description: Описание предложения
+          example: Просторная квартира с видом на море
+          minLength: 20
+          maxLength: 1024
+        city:
+          type: string
+          description: Город. Один из возможных вариант из справочника городов.
+          example: Paris
+        imagePreview:
+          type: string
+          description: Ссылка на изображения для превью
+          example: https://example.com
+          format: uri
+        photos:
+          type: array
+          description: Список ссылок на фотографии жилья
+          example: ['https://example.com']
+          items:
+            type: string
+            format: uri
+          minItems: 6
+          maxItems: 6
+        isPremium:
+          type: boolean
+          description: Флаг для премиального предложения
+          example: true
+        type:
+          type: string
+          description: Тип жилья из справочника типов жилья
+          example: apartment
+        roomNumber:
+          type: number
+          description: Количество комнат
+          example: 1
+          minimum: 1
+          maximum: 8
+        guestNumber:
+          type: number
+          description: Количество гостей
+          example: 1
+          minimum: 1
+          maximum: 10
+        price:
+          type: number
+          description: Цена
+          minimum: 100
+          maximum: 100000
+        facilities:
+          type: array
+          description: Список удобств
+          example: ['Breakfast', 'Air conditioning']
+          items:
+            type: string
+          minItems: 1
+
+    deleteOffer:
+      type: object
+
+      properties:
+        id:
+          type: number
+          example: 123
+          description: ID предложения
+
+    offer:
+      type: object
+
+      properties:
+        id:
+          type: number
+          description: ID предложения
+          example: 123
+        name:
+          type: string
+          description: Наименование предложения
+          example: Сдаю 1-к комнатную квартиру
+          minLength: 10
+          maxLength: 100
+        description:
+          type: string
+          description: Описание предложения
+          example: Просторная квартира с видом на море
+          minLength: 20
+          maxLength: 1024
+        publishDate:
+          type: string
+          description: Дата публикации
+          example: 12.06.2025
+        city:
+          type: string
+          description: Город. Один из возможных вариант из справочника городов.
+          example: Paris
+        imagePreview:
+          type: string
+          description: Ссылка на изображения для превью
+          example: https://example.com
+          format: uri
+        photos:
+          type: array
+          description: Список ссылок на фотографии жилья
+          example: ['https://example.com','https://example.com','https://example.com','https://example.com','https://example.com','https://example.com']
+          items:
+            type: string
+            format: uri
+          minItems: 6
+          maxItems: 6
+        isPremium:
+          type: boolean
+          description: Флаг для премиального предложения
+          example: true
+        isFavorite:
+          type: boolean
+          description: Флаг для избранного предложения
+          example: true
+        rating:
+          type: number
+          description: Рейтинг предложения
+        type:
+          type: string
+          description: Тип жилья из справочника типов жилья
+          example: apartment
+        roomNumber:
+          type: number
+          description: Количество комнат
+          example: 1
+          minimum: 1
+          maximum: 8
+        guestNumber:
+          type: number
+          description: Количество гостей
+          example: 1
+          minimum: 1
+          maximum: 10
+        price:
+          type: number
+          description: Цена
+          minimum: 100
+          maximum: 100000
+        facilities:
+          type: array
+          description: Список удобств
+          example: ['Breakfast', 'Air conditioning']
+          items:
+            type: string
+          minItems: 1
+        author:
+          $ref: '#/components/schemas/user'
+        commentsCount:
+          type: number
+          description: Количество комментариев
+        coordinates:
+          type: object
+          properties:
+            longitude:
+              type: number
+              description: Широта
+              example: 53.550341
+            latitude:
+              type: number
+              description: Долгота
+              example: 10.000654
+
+    getOffer:
+      type: array
+      description: Список предложений
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+            description: ID предложения
+            example: 123
+          name:
+            type: string
+            description: Наименование предложения
+            example: Сдаю 1-к комнатную квартиру
+          city:
+            type: string
+            description: Город. Один из возможных вариант из справочника городов.
+            example: Paris
+          imagePreview:
+            type: string
+            description: Ссылка на изображения для превью
+            example: https://example.com
+            format: uri
+          isPremium:
+            type: boolean
+            description: Флаг для премиального предложения
+            example: true
+          isFavorite:
+            type: boolean
+            description: Флаг для избранного предложения
+            example: true
+          type:
+            type: string
+            description: Тип жилья из справочника типов жилья
+            example: apartment
+          price:
+            type: number
+            description: Цена
+          facilities:
+            type: array
+            description: Список удобств
+            example: ['Breakfast', 'Air conditioning']
+            items:
+              type: string
+          rating:
+            type: number
+            description: Рейтинг жилья
+            example: 5
+          publishDate:
+            type: string
+            description: Дата публикации предложения
+            example: 14.06.2025
+          commentsCount:
+            type: number
+            description: Количество комментариев
+            example: 0
+
+    createComment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          description: Текст комментария
+          example: Отель был супер, приедем еще.
+          minLength: 5
+          maxLength: 1024
+        rating:
+          type: number
+          description: Рейтинг поставленный предложению
+          example: 5
+          minimum: 1
+          maximum: 8
+        authorId:
+          type: number
+          description: ID пользователя
+          example: 123
+
+    comment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          description: Текст комментария
+          example: Отель был супер, приедем еще.
+        postDate:
+          type: string
+          description: Дата публикации комментария
+          example: 14.06.2025
+        rating:
+          type: number
+          description: Рейтинг поставленный предложению
+          example: 5
+        author:
+          $ref: '#/components/schemas/user'
+
+    getComment:
+      type: array
+      items:
+        $ref: '#/components/schemas/comment'
+
+    favoriteRequestBody:
+      type: object
+
+      properties:
+        offerId:
+          type: number
+          description: ID предложения для добавления в избранное
+          example: 123
+
+    type:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+        name:
+          type: string
+          example: Apartment
+
+    types:
+      type: array
+      items:
+        $ref: '#/components/schemas/type'
+
+    facility:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 123
+        name:
+          type: string
+          example: Breakfast
+
+    facilities:
+      type: array
+      items:
+        $ref: '#/components/schemas/facility'

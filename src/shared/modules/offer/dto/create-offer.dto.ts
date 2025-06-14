@@ -6,7 +6,7 @@ export class CreateOfferDto {
   imagePreview: string;
   photos: string[];
   isPremium: boolean;
-  isFavourite: boolean;
+  isFavorite: boolean;
   rating: number;
   typeId: string;
   roomNumber: number;
