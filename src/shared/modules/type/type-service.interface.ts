@@ -7,4 +7,5 @@ export interface TypeService {
   findByTypeId(typeId: string): Promise<DocumentType<TypeEntity> | null>;
   findByTypeName(categoryName: string): Promise<DocumentType<TypeEntity> | null>;
   findByTypeNameOrCreate(categoryName: string, dto: CreateTypeDto): Promise<DocumentType<TypeEntity>>;
+  find(): Promise<DocumentType<TypeEntity>[]>;
 }

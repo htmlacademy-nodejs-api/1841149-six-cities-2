@@ -14,6 +14,7 @@ export class DefaultUserService implements UserService {
   ) {}
 
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
+    // TODO только уникальные email
     const user = new UserEntity(dto);
     user.setPassword(dto.password, salt);
 

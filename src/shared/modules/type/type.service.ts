@@ -35,4 +35,8 @@ export class DefaultTypeService implements TypeService {
 
     return this.create(dto);
   }
+
+  public async find(): Promise<DocumentType<TypeEntity>[]> {
+    return this.typeModel.find();
+  }
 }

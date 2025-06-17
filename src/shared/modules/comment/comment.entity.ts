@@ -1,5 +1,6 @@
 import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
-import {UserEntity} from '../user/index.js';
+import { UserEntity } from '../user/index.js';
+import { OfferEntity } from '../offer/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface CommentEntity extends defaultClasses.Base {}
@@ -12,7 +13,7 @@ export interface CommentEntity extends defaultClasses.Base {}
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export class CommentEntity {
+export class CommentEntity extends defaultClasses.TimeStamps {
   @prop({required: true, minlength: 5, maxlength: 1024})
   public text: string;
 
@@ -25,8 +26,11 @@ export class CommentEntity {
   })
   public authorId: Ref<UserEntity>;
 
-  @prop({required: false})
-  public postDate: Date;
+  @prop({
+    ref: OfferEntity,
+    required: true
+  })
+  public offerId: Ref<OfferEntity>;
 }
 
 export const CommentModel = getModelForClass(CommentEntity);

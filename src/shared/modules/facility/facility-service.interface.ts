@@ -7,4 +7,5 @@ export interface FacilityService {
   findByFacilityId(facilityId: string): Promise<DocumentType<FacilityEntity> | null>;
   findByFacilityName(facilityName: string): Promise<DocumentType<FacilityEntity> | null>;
   findByFacilityNameOrCreate(facilityName: string, dto: CreateFacilityDto): Promise<DocumentType<FacilityEntity>>;
+  find(): Promise<DocumentType<FacilityEntity>[]>;
 }

@@ -35,4 +35,8 @@ export class DefaultFacilityService implements FacilityService {
 
     return this.create(dto);
   }
+
+  public async find(): Promise<DocumentType<FacilityEntity>[]> {
+    return this.facilityModel.find();
+  }
 }
