@@ -891,8 +891,12 @@ components:
 
       properties:
         offerId:
-          type: number
+          type: string
           description: ID предложения для добавления в избранное
+          example: 123
+        userId:
+          type: string
+          description: ID пользователя
           example: 123
 
     type:

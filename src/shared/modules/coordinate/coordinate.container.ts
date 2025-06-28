@@ -8,8 +8,8 @@ import { CoordinateEntity, CoordinateModel } from './coordinate.entity.js';
 export function createCoordinateContainer() {
   const facilityContainer = new Container();
 
-  facilityContainer.bind<CoordinateService>(Component.FacilityService).to(DefaultCoordinateService);
-  facilityContainer.bind<types.ModelType<CoordinateEntity>>(Component.FacilityModel).toConstantValue(CoordinateModel);
+  facilityContainer.bind<CoordinateService>(Component.CoordinateService).to(DefaultCoordinateService);
+  facilityContainer.bind<types.ModelType<CoordinateEntity>>(Component.CoordinateModel).toConstantValue(CoordinateModel);
 
   return facilityContainer;
 }

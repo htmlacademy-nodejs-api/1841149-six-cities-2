@@ -58,9 +58,11 @@ export class ImportCommand implements Command {
       facilities.push(existFacility.id);
     }
 
+    console.log(offer);
+
     const offerType = await this.typeService.findByTypeNameOrCreate(offer.type, { name: offer.type });
 
-    const coordinates = await this.coordinateService.findByCoordinateNameOrCreate(offer.city, { name: offer.city, latitude: offer.coordinates.latitude, longitude: offer.coordinates.longitude});
+    const coordinates = await this.coordinateService.findByCoordinateNameOrCreate(offer.city, { name: offer.city, latitude: offer.coordinates.latitude, longitude: offer.coordinates.longitude });
 
     await this.offerService.create({
       facilities,

@@ -6,7 +6,7 @@ export class UpdateOfferDto {
   public imagePreview?: string;
   public photos?: string[];
   public isPremium?: boolean;
-  public typeId?: string;
+  public type?: string;
   public roomNumber?: number;
   public guestNumber?: number;
   public price?: number;

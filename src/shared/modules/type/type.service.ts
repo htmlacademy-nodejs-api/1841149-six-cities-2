@@ -1,11 +1,12 @@
 import { TypeService } from './type-service.interface.js';
 import { Component } from '../../types/index.js';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { Logger } from '../../libs/logger/index.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { TypeEntity } from './type.entity.js';
 import { CreateTypeDto } from './dto/create-type.dto.js';
 
+@injectable()
 export class DefaultTypeService implements TypeService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
@@ -23,7 +24,7 @@ export class DefaultTypeService implements TypeService {
   }
 
   public async findByTypeName(typeName: string): Promise<DocumentType<TypeEntity> | null> {
-    return this.typeModel.findOne({ name: typeName}).exec();
+    return this.typeModel.findOne({ name: typeName }).exec();
   }
 
   public async findByTypeNameOrCreate(typeName: string, dto: CreateTypeDto): Promise<DocumentType<TypeEntity>> {

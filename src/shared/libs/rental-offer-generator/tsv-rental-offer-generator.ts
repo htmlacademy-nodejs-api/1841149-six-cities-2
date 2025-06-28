@@ -18,7 +18,9 @@ const MIN_FACILITIES_NUMBER = 1;
 const MAX_FACILITIES_NUMBER = 8;
 
 export class TSVRentalOfferGenerator {
-  constructor(private readonly mockData: MockServerData) {}
+  constructor(private readonly mockData: MockServerData) {
+    console.log(this.mockData);
+  }
 
   public generate(): string {
     const name = getRandomItem<string>(this.mockData.names);
@@ -41,6 +43,7 @@ export class TSVRentalOfferGenerator {
     const publishDate = dayjs()
       .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')
       .toISOString();
+
 
     return [
       name, description, publishDate, city, imagePreview, photos, isPremium, isFavourite, rating, type, roomNumber, guestNumber, price, facilities, author, commentsCount, coordinates

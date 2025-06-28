@@ -1,5 +1,5 @@
 import { OfferService } from './offer-service.interface.js';
-import {Component, SortType} from '../../types/index.js';
+import { Component, SortType } from '../../types/index.js';
 import { inject, injectable } from 'inversify';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { OfferEntity } from './offer.entity.js';
@@ -12,7 +12,7 @@ import { DEFAULT_OFFER_COUNT, DEFAULT_PREMIUM_COUNT } from './offer.constants.js
 export class DefaultOfferService implements OfferService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
-    @inject(Component.TypeModel) private readonly offerModel: types.ModelType<OfferEntity>
+    @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>
   ) {}
 
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
@@ -78,7 +78,7 @@ export class DefaultOfferService implements OfferService {
 
   public async findPremiumByCity(city: string): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({ city: city}, {})
+      .find({ city: city }, {})
       .sort({ publishData: SortType.Down })
       .limit(DEFAULT_PREMIUM_COUNT)
       .populate(['typeId', 'authorId', 'facilities', 'coordinatesId'])
@@ -87,7 +87,7 @@ export class DefaultOfferService implements OfferService {
 
   public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .findByIdAndUpdate(offerId, {'$inc': {
+      .findByIdAndUpdate(offerId, { '$inc': {
         commentCount: 1
       }
       }).exec();
@@ -102,7 +102,7 @@ export class DefaultOfferService implements OfferService {
         {
           $lookup: {
             from: 'comments',
-            let: { offerId: '$_id'},
+            let: { offerId: '$_id' },
             pipeline: [
               {
                 $match: { $expr: { $eq: ['$$offerId', '$offerId'] } }
