@@ -24,17 +24,21 @@ export class FavoriteController extends BaseController {
   }
 
   public async index(_req: Request, res: Response) {
+    // TODO брать user id из токена
     const result = await this.favoriteService.findByUserId('68603cbdc63ef51dd5121649');
     this.ok(res, fillDTO(FavoriteRdo, result));
   }
 
   public async delete({ body }: CreateFavoriteRequest, res: Response) {
+    // TODO брать user id из токена
     const result = await this.favoriteService.deleteByUserIdAndOfferId(body.userId, body.offerId);
 
-    this.ok(res, result);
+    this.ok(res, fillDTO(FavoriteRdo, result));
   }
 
   public async add({ body }: CreateFavoriteRequest, res: Response) {
+    // TODO брать user id из токена
+    // TODO проверка на существование
     const result = await this.favoriteService.create(body);
 
     this.ok(res, fillDTO(FavoriteRdo, result));

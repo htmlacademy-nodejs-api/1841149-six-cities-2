@@ -8,7 +8,8 @@ Content-Type: application/json
   "name": "John Doe",
   "email": "john-doe@example.com",
   "avatar": "torrance.png",
-  "password": "top-secret"
+  "password": "top-secret",
+  "userType": "default"
 }
 
 ###

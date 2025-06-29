@@ -1,9 +1,8 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { OfferRdo } from '../../offer/rdo/offer.rdo.js';
 
 export class FavoriteRdo {
-  @Expose()
-  public id: string;
-
-  @Expose()
-  public offerIds: string;
+  @Expose({ name: 'offerIds' })
+  @Type(() => OfferRdo)
+  public offers: OfferRdo[];
 }

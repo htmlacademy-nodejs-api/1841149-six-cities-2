@@ -7,8 +7,8 @@ import { createTypeContainer } from './shared/modules/type/index.js';
 import { createFacilityContainer } from './shared/modules/facility/index.js';
 import { createCoordinateContainer } from './shared/modules/coordinate/index.js';
 import { createCommentContainer } from './shared/modules/comment/index.js';
-import {createOfferContainer} from './shared/modules/offer/index.js';
-import {createFavoriteContainer} from './shared/modules/favorite/index.js';
+import { createOfferContainer } from './shared/modules/offer/index.js';
+import { createFavoriteContainer } from './shared/modules/favorite/index.js';
 
 async function bootstrap() {
   const appContainer = Container.merge(

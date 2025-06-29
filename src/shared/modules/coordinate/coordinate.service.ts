@@ -23,7 +23,7 @@ export class DefaultCoordinateService implements CoordinateService {
   }
 
   public async findByCoordinateName(coordinateName: string): Promise<DocumentType<CoordinateEntity> | null> {
-    return this.coordinateModel.findOne({ name: coordinateName}).exec();
+    return this.coordinateModel.findOne({ name: coordinateName }).exec();
   }
 
   public async findByCoordinateNameOrCreate(coordinateName: string, dto: CreateCoordinateDto): Promise<DocumentType<CoordinateEntity>> {

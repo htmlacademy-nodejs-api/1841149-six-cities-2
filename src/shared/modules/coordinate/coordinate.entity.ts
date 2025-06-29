@@ -12,13 +12,13 @@ export interface CoordinateEntity extends defaultClasses.Base {}
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class CoordinateEntity extends defaultClasses.TimeStamps {
-  @prop({required: true})
+  @prop({ required: true })
   public name: string;
 
-  @prop({required: true})
+  @prop({ required: true })
   public longitude: number;
 
-  @prop({required: true})
+  @prop({ required: true })
   public latitude: number;
 }
 

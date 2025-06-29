@@ -46,6 +46,8 @@ export class UserController extends BaseController {
   public async login({ body }: LoginUserRequestType, _res: Response): Promise<void> {
     const existedUser = await this.userService.findByEmail(body.email);
 
+    // TODO добавление JWT токена
+
     if (!existedUser) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,

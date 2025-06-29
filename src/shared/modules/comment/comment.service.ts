@@ -1,11 +1,11 @@
 import { CommentService } from './comment-service.interface.js';
-import {Component, SortType} from '../../types/index.js';
+import { Component, SortType } from '../../types/index.js';
 import { inject } from 'inversify';
 import { Logger } from '../../libs/logger/index.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { CommentEntity } from './comment.entity.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
-import {DEFAULT_COMMENTS_COUNT} from './comment.constants.js';
+import { DEFAULT_COMMENTS_COUNT } from './comment.constants.js';
 import { OfferService } from '../offer/index.js';
 
 export class DefaultCommentService implements CommentService {

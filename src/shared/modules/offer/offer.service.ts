@@ -21,36 +21,36 @@ export class DefaultOfferService implements OfferService {
     return result;
   }
 
-  public async findById(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null> {
+  public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findById(offerId)
-      .aggregate([
-        {
-          $lookup: {
-            from: 'favorites',
-            let: { offerId: '$_id', userId: userId },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$userId', '$$userId'] },
-                      { $in: ['$$offerId', '$offerIds'] }
-                    ]
-                  }
-                }
-              }
-            ],
-            as: 'favoriteMatch'
-          }
-        },
-        {
-          $addFields: {
-            isFavorite: { $gt: [{ $size: '$favoriteMatch' }, 0] }
-          }
-        },
-        { $unset: 'favoriteMatch' },
-      ])
+      // .aggregate([
+      //   {
+      //     $lookup: {
+      //       from: 'favorites',
+      //       let: { offerId: '$_id', userId: userId },
+      //       pipeline: [
+      //         {
+      //           $match: {
+      //             $expr: {
+      //               $and: [
+      //                 { $eq: ['$userId', '$$userId'] },
+      //                 { $in: ['$$offerId', '$offerIds'] }
+      //               ]
+      //             }
+      //           }
+      //         }
+      //       ],
+      //       as: 'favoriteMatch'
+      //     }
+      //   },
+      //   {
+      //     $addFields: {
+      //       isFavorite: { $gt: [{ $size: '$favoriteMatch' }, 0] }
+      //     }
+      //   },
+      //   { $unset: 'favoriteMatch' },
+      // ])
       .populate(['typeId', 'authorId', 'facilities', 'coordinatesId'])
       .exec();
   }
@@ -58,6 +58,7 @@ export class DefaultOfferService implements OfferService {
   public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find()
+      .sort({ publishData: SortType.Down })
       .limit(count ? count : DEFAULT_OFFER_COUNT)
       .populate(['typeId', 'authorId', 'facilities', 'coordinatesId'])
       .exec();

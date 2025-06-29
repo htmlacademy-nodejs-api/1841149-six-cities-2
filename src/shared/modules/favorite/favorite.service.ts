@@ -21,11 +21,17 @@ export class DefaultFavoriteService implements FavoriteService {
   }
 
   public async findByUserId(userId: string): Promise<DocumentType<FavoriteEntity>[]> {
-    return this.favoriteModel.find({ userId }).populate(['offerIds']).exec();
+    return this.favoriteModel.find({ userId }).populate({
+      path: 'offerIds',
+      populate: {
+        path: 'typeId'
+      }
+    }).exec();
   }
 
-  public async deleteByUserIdAndOfferId(userId: string, offerId: string): Promise<number | null> {
-    const result = await this.favoriteModel.deleteOne(
+  public async deleteByUserIdAndOfferId(userId: string, offerId: string): Promise<DocumentType<FavoriteEntity>[] | []> {
+    let result: DocumentType<FavoriteEntity>[] = [];
+    const isDeleted = await this.favoriteModel.deleteOne(
       { userId: new Types.ObjectId(userId) },
       {
         $pull: {
@@ -34,7 +40,11 @@ export class DefaultFavoriteService implements FavoriteService {
       }
     );
 
-    return result.deletedCount ?? null;
+    if (isDeleted.deletedCount) {
+      result = await this.findByUserId(userId);
+    }
+
+    return result;
   }
 
   public async updateByUserIdOrCreate(userId: string, offerId: string): Promise<DocumentType<FavoriteEntity>> {

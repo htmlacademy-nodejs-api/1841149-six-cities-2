@@ -1,4 +1,5 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
+import { OfferTypeRdo } from '../../type/rdo/offer-type.rdo.js';
 
 export class OfferRdo {
   @Expose()
@@ -22,18 +23,14 @@ export class OfferRdo {
   @Expose()
   public isFavorite: boolean;
 
-  @Expose()
-  public rating: number;
-
-  @Expose()
-  public typeId: string;
+  @Expose({ name: 'typeId' })
+  @Type(() => OfferTypeRdo)
+  @Transform(({ obj }) => obj.typeId?.name)
+  public type: string;
 
   @Expose()
   public price: number;
 
   @Expose()
-  public authorId: string;
-
-  @Expose()
-  public commentsCount: number;
+  public commentCount: number;
 }

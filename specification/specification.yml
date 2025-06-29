@@ -47,8 +47,8 @@ paths:
         "400":
           description: Ошибка в корректности данных
 
-        "409":
-          description: Пользователь с таким email уже существует.
+        "401":
+          description: Email или пароль неверный.
 
   /auth/login:
     post:
@@ -164,7 +164,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/createOffer'
+              $ref: '#/components/schemas/offer'
         required: true
 
       responses:
@@ -194,7 +194,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/editOffer'
+              $ref: '#/components/schemas/offer'
         required: true
 
       responses:
@@ -351,7 +351,6 @@ paths:
         "400":
           description: Ошибка в корректности данных
 
-
   /facilities:
     get:
       tags:
@@ -370,7 +369,6 @@ paths:
         "400":
           description: Ошибка в корректности данных
 
-
   /favorite:
     get:
       tags:
@@ -386,7 +384,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getOffer'
+                $ref: '#/components/schemas/getFavorite'
 
         "400":
           description: Ошибка в корректности данных
@@ -412,7 +410,11 @@ paths:
 
       responses:
         "200":
-          description: Добавляет предложение в избранное.
+          description: Массив объектов избранных предложений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getFavorite'
 
         "400":
           description: Ошибка в корректности данных
@@ -477,6 +479,10 @@ components:
         password:
           type: string
           example: 123456
+
+        userType:
+          type: string
+          example: default
 
     loginUser:
       type: object
@@ -822,16 +828,6 @@ components:
           price:
             type: number
             description: Цена
-          facilities:
-            type: array
-            description: Список удобств
-            example: ['Breakfast', 'Air conditioning']
-            items:
-              type: string
-          rating:
-            type: number
-            description: Рейтинг жилья
-            example: 5
           publishDate:
             type: string
             description: Дата публикации предложения
@@ -840,6 +836,13 @@ components:
             type: number
             description: Количество комментариев
             example: 0
+
+    getFavorite:
+      type: object
+
+      properties:
+        offers:
+          $ref: '#/components/schemas/getOffer'
 
     createComment:
       type: object
@@ -903,8 +906,8 @@ components:
       type: object
       properties:
         id:
-          type: number
-          example: 123
+          type: string
+          example: 123asd
         name:
           type: string
           example: Apartment
@@ -918,8 +921,8 @@ components:
       type: object
       properties:
         id:
-          type: number
-          example: 123
+          type: string
+          example: 123asd
         name:
           type: string
           example: Breakfast
