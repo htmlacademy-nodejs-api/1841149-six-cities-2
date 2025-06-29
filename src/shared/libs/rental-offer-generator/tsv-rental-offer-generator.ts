@@ -38,7 +38,7 @@ export class TSVRentalOfferGenerator {
     const facilities = getRandomItems<string>(this.mockData.facilities, generateRandomValue(MIN_FACILITIES_NUMBER, MAX_FACILITIES_NUMBER)).join(';');
     const commentsCount = 0;
     const author = Object.values(getRandomItem(this.mockData.authors)).join(';');
-    const coordinates = Object.values(this.mockData.coordinates[city]).join(';');
+    const coordinates = Object.values(getRandomItem(this.mockData.coordinates)).join(';');
 
     const publishDate = dayjs()
       .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')

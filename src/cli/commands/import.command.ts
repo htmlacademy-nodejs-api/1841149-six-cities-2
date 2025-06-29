@@ -1,7 +1,6 @@
 import { Command } from './command.interface.js';
 import { TSVFileReader } from '../../shared/libs/file-reader/index.js';
 import { generateRentalOffer, getErrorMessage, getMongoURI } from '../../shared/helpers/index.js';
-import { CoordinateModel, CoordinateService, DefaultCoordinateService } from '../../shared/modules/coordinate/index.js';
 import { DefaultFacilityService, FacilityModel, FacilityService } from '../../shared/modules/facility/index.js';
 import { DefaultOfferService, OfferModel, OfferService } from '../../shared/modules/offer/index.js';
 import { DefaultTypeService, TypeModel, TypeService } from '../../shared/modules/type/index.js';
@@ -13,7 +12,6 @@ import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
 
 export class ImportCommand implements Command {
   private userService: UserService;
-  private coordinateService: CoordinateService;
   private facilityService: FacilityService;
   private offerService: OfferService;
   private typeService: TypeService;
@@ -26,7 +24,6 @@ export class ImportCommand implements Command {
     this.onCompleteImport = this.onCompleteImport.bind(this);
 
     this.logger = new ConsoleLogger();
-    this.coordinateService = new DefaultCoordinateService(this.logger, CoordinateModel);
     this.facilityService = new DefaultFacilityService(this.logger, FacilityModel);
     this.offerService = new DefaultOfferService(this.logger, OfferModel);
     this.typeService = new DefaultTypeService(this.logger, TypeModel);
@@ -58,11 +55,7 @@ export class ImportCommand implements Command {
       facilities.push(existFacility.id);
     }
 
-    console.log(offer);
-
     const offerType = await this.typeService.findByTypeNameOrCreate(offer.type, { name: offer.type });
-
-    const coordinates = await this.coordinateService.findByCoordinateNameOrCreate(offer.city, { name: offer.city, latitude: offer.coordinates.latitude, longitude: offer.coordinates.longitude });
 
     await this.offerService.create({
       facilities,
@@ -74,14 +67,14 @@ export class ImportCommand implements Command {
       imagePreview: offer.imagePreview,
       photos: offer.photos,
       isPremium: offer.isPremium,
-      isFavorite: offer.isFavourite,
-      rating: offer.rating,
       typeId: offerType.id,
       roomNumber: offer.roomNumber,
       guestNumber: offer.guestNumber,
       price: offer.price,
-      coordinatesId: coordinates?.id,
-      commentsCount: 0,
+      coordinates: {
+        latitude: offer.coordinates.latitude,
+        longitude: offer.coordinates.longitude
+      },
     });
   }
 

@@ -9,5 +9,5 @@ export type MockServerData = {
   types: string[],
   facilities: string[],
   authors: Author[],
-  coordinates: Record<string, Coordinates>
+  coordinates: Coordinates[],
 }

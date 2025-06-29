@@ -1,8 +1,7 @@
 import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
-import { City } from '../../types/index.js';
+import { City, Coordinates } from '../../types/index.js';
 import { FacilityEntity } from '../facility/index.js';
 import { UserEntity } from '../user/index.js';
-import { CoordinateEntity } from '../coordinate/index.js';
 import { TypeEntity } from '../type/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -79,9 +78,8 @@ export class OfferEntity {
 
   @prop({
     required: true,
-    ref: CoordinateEntity
   })
-  public coordinatesId: Ref<CoordinateEntity>;
+  public coordinates: Coordinates;
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

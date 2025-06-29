@@ -12,8 +12,6 @@ export const Component = {
   FacilityService: Symbol.for('FacilityService'),
   FacilityModel: Symbol.for('FacilityModel'),
   FacilityController: Symbol.for('FacilityController'),
-  CoordinateService: Symbol.for('CoordinateService'),
-  CoordinateModel: Symbol.for('CoordinateModel'),
   CommentService: Symbol.for('CommentService'),
   CommentModel: Symbol.for('CommentModel'),
   OfferService: Symbol.for('OfferService'),

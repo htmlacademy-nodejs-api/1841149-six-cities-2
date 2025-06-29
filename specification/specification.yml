@@ -194,7 +194,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/offer'
+              $ref: '#/components/schemas/editOffer'
         required: true
 
       responses:
@@ -531,73 +531,6 @@ components:
           enum:
             - default
             - pro
-
-    createOffer:
-      type: object
-
-      properties:
-        name:
-          type: string
-          description: Наименование предложения
-          example: Сдаю 1-к комнатную квартиру
-          minLength: 10
-          maxLength: 100
-        description:
-          type: string
-          description: Описание предложения
-          example: Просторная квартира с видом на море
-          minLength: 20
-          maxLength: 1024
-        city:
-          type: string
-          description: Город. Один из возможных вариант из справочника городов.
-          example: Paris
-        imagePreview:
-          type: string
-          description: Ссылка на изображения для превью
-          example: https://example.com
-          format: uri
-        photos:
-          type: array
-          description: Список ссылок на фотографии жилья
-          example: ['https://example.com']
-          items:
-            type: string
-            format: uri
-          minItems: 6
-          maxItems: 6
-        isPremium:
-          type: boolean
-          description: Флаг для премиального предложения
-          example: true
-        type:
-          type: string
-          description: Тип жилья из справочника типов жилья
-          example: apartment
-        roomNumber:
-          type: number
-          description: Количество комнат
-          example: 1
-          minimum: 1
-          maximum: 8
-        guestNumber:
-          type: number
-          description: Количество гостей
-          example: 1
-          minimum: 1
-          maximum: 10
-        price:
-          type: number
-          description: Цена
-          minimum: 100
-          maximum: 100000
-        facilities:
-          type: array
-          description: Список удобств
-          example: ['Breakfast', 'Air conditioning']
-          items:
-            type: string
-          minItems: 1
 
     editOffer:
       type: object

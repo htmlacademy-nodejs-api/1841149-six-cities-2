@@ -12,5 +12,8 @@ export class CreateOfferDto {
   price: number;
   facilities: string[];
   authorId: string;
-  coordinatesId: string;
+  coordinates: {
+    latitude: number,
+    longitude: number
+  };
 }

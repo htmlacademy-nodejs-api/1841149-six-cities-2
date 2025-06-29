@@ -24,34 +24,7 @@ export class DefaultOfferService implements OfferService {
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findById(offerId)
-      // .aggregate([
-      //   {
-      //     $lookup: {
-      //       from: 'favorites',
-      //       let: { offerId: '$_id', userId: userId },
-      //       pipeline: [
-      //         {
-      //           $match: {
-      //             $expr: {
-      //               $and: [
-      //                 { $eq: ['$userId', '$$userId'] },
-      //                 { $in: ['$$offerId', '$offerIds'] }
-      //               ]
-      //             }
-      //           }
-      //         }
-      //       ],
-      //       as: 'favoriteMatch'
-      //     }
-      //   },
-      //   {
-      //     $addFields: {
-      //       isFavorite: { $gt: [{ $size: '$favoriteMatch' }, 0] }
-      //     }
-      //   },
-      //   { $unset: 'favoriteMatch' },
-      // ])
-      .populate(['typeId', 'authorId', 'facilities', 'coordinatesId'])
+      .populate(['typeId', 'authorId', 'facilities'])
       .exec();
   }
 
@@ -60,7 +33,7 @@ export class DefaultOfferService implements OfferService {
       .find()
       .sort({ publishData: SortType.Down })
       .limit(count ? count : DEFAULT_OFFER_COUNT)
-      .populate(['typeId', 'authorId', 'facilities', 'coordinatesId'])
+      .populate(['typeId', 'authorId', 'facilities'])
       .exec();
   }
 
@@ -73,7 +46,7 @@ export class DefaultOfferService implements OfferService {
   public async updateById(id: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findByIdAndUpdate(id, dto, { new: true })
-      .populate(['typeId', 'authorId', 'facilities', 'coordinatesId'])
+      .populate(['typeId', 'authorId', 'facilities'])
       .exec();
   }
 
@@ -82,7 +55,7 @@ export class DefaultOfferService implements OfferService {
       .find({ city: city }, {})
       .sort({ publishData: SortType.Down })
       .limit(DEFAULT_PREMIUM_COUNT)
-      .populate(['typeId', 'authorId', 'facilities', 'coordinatesId'])
+      .populate(['typeId', 'authorId', 'facilities'])
       .exec();
   }
 
