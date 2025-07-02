@@ -9,6 +9,8 @@ export const Component = {
   TypeService: Symbol.for('TypeService'),
   TypeModel: Symbol.for('TypeModel'),
   TypeController: Symbol.for('TypeController'),
+  CityService: Symbol.for('CityService'),
+  CityModel: Symbol.for('CityModel'),
   FacilityService: Symbol.for('FacilityService'),
   FacilityModel: Symbol.for('FacilityModel'),
   FacilityController: Symbol.for('FacilityController'),

@@ -9,10 +9,12 @@ import { DatabaseClient, MongoDatabaseClient } from '../../shared/libs/database-
 import { Logger, ConsoleLogger } from '../../shared/libs/logger/index.js';
 import { RentalOffer } from '../../shared/types/index.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
+import { CityModel, CityService, DefaultCityService } from '../../shared/modules/city/index.js';
 
 export class ImportCommand implements Command {
   private userService: UserService;
   private facilityService: FacilityService;
+  private cityService: CityService;
   private offerService: OfferService;
   private typeService: TypeService;
   private databaseClient: DatabaseClient;
@@ -28,6 +30,7 @@ export class ImportCommand implements Command {
     this.offerService = new DefaultOfferService(this.logger, OfferModel);
     this.typeService = new DefaultTypeService(this.logger, TypeModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
+    this.cityService = new DefaultCityService(this.logger, CityModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
@@ -56,6 +59,7 @@ export class ImportCommand implements Command {
     }
 
     const offerType = await this.typeService.findByTypeNameOrCreate(offer.type, { name: offer.type });
+    const city = await this.cityService.findByNameOrCreate(offer.city, { name: offer.city });
 
     await this.offerService.create({
       facilities,
@@ -63,7 +67,7 @@ export class ImportCommand implements Command {
       name: offer.name,
       description: offer.description,
       publishDate: offer.publishDate,
-      city: offer.city,
+      cityId: city.id,
       imagePreview: offer.imagePreview,
       photos: offer.photos,
       isPremium: offer.isPremium,

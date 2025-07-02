@@ -1,8 +1,9 @@
 import { defaultClasses, getModelForClass, modelOptions, prop, Ref } from '@typegoose/typegoose';
-import { City, Coordinates } from '../../types/index.js';
+import { Coordinates } from '../../types/index.js';
 import { FacilityEntity } from '../facility/index.js';
 import { UserEntity } from '../user/index.js';
 import { TypeEntity } from '../type/index.js';
+import { CityEntity } from '../city/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
@@ -26,10 +27,10 @@ export class OfferEntity {
   public publishDate: Date;
 
   @prop({
-    type: () => String,
-    enum: City
+    required: true,
+    ref: () => CityEntity,
   })
-  public city!: City;
+  public cityId!: Ref<CityEntity>;
 
   @prop({ required: true })
   public imagePreview: string;

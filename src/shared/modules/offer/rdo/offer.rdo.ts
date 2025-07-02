@@ -1,5 +1,6 @@
-import { Expose, Transform, Type } from 'class-transformer';
-import { OfferTypeRdo } from '../../type/rdo/offer-type.rdo.js';
+import { Expose, Type } from 'class-transformer';
+import { CityRdo } from '../../city/index.js';
+import { TypeRdo } from '../../type/index.js';
 
 export class OfferRdo {
   @Expose()
@@ -11,8 +12,9 @@ export class OfferRdo {
   @Expose()
   public publishDate: string;
 
-  @Expose()
-  public city: string;
+  @Expose({ name: 'cityId' })
+  @Type(() => CityRdo)
+  public city: CityRdo;
 
   @Expose()
   public imagePreview: string;
@@ -24,9 +26,8 @@ export class OfferRdo {
   public isFavorite: boolean;
 
   @Expose({ name: 'typeId' })
-  @Type(() => OfferTypeRdo)
-  @Transform(({ obj }) => obj.typeId?.name)
-  public type: string;
+  @Type(() => TypeRdo)
+  public type: TypeRdo;
 
   @Expose()
   public price: number;

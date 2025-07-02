@@ -1,3 +1,5 @@
+import { ParamsDictionary } from 'express-serve-static-core';
+
 export type ParamCityPremiumOffers = {
-  city?: string;
-}
+  cityId: string;
+} | ParamsDictionary;
