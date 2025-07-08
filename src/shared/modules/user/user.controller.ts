@@ -1,9 +1,15 @@
-import { BaseController, HttpError } from '../../libs/rest/index.js';
+import {
+  BaseController,
+  HttpError,
+  UploadFileMiddleware,
+  ValidateDtoMiddleware,
+  ValidateObjectIdMiddleware
+} from '../../libs/rest/index.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { HttpMethod } from '../../../rest/index.js';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { LoginUserRequestType } from './login-user-request.type.js';
 import { UserService } from './user-service.interface.js';
 import { StatusCodes } from 'http-status-codes';
@@ -11,6 +17,8 @@ import { fillDTO } from '../../helpers/index.js';
 import { UserRdo } from './rdo/user.rdo.js';
 import { Config, RestSchema } from '../../libs/config/index.js';
 import { CreateUserRequestType } from './create-user-request.type.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { LoginUserDto } from './dto/login-user.dto.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -22,10 +30,28 @@ export class UserController extends BaseController {
     super(logger);
     this.logger.info('Register routes for UserController…');
 
-    this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
+    this.addRoute({
+      path: '/register',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Post,
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
+    });
     this.addRoute({ path: '/logout', method: HttpMethod.Get, handler: this.logout });
-    this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.status });
+    this.addRoute({ path: '/status', method: HttpMethod.Get, handler: this.status });
+    this.addRoute({
+      path: '/:userId/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar')]
+    });
   }
 
   public async create({ body }: CreateUserRequestType, res: Response): Promise<void> {
@@ -79,5 +105,11 @@ export class UserController extends BaseController {
       'Not implemented',
       'UserController'
     );
+  }
+
+  public async uploadAvatar(req: Request, res: Response): Promise<void> {
+    this.created(res, {
+      filepath: req.file?.path
+    });
   }
 }

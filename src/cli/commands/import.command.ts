@@ -27,7 +27,7 @@ export class ImportCommand implements Command {
 
     this.logger = new ConsoleLogger();
     this.facilityService = new DefaultFacilityService(this.logger, FacilityModel);
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
+    this.offerService = new DefaultOfferService(this.logger, OfferModel, CityModel, TypeModel, FacilityModel);
     this.typeService = new DefaultTypeService(this.logger, TypeModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.cityService = new DefaultCityService(this.logger, CityModel);

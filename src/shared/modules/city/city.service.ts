@@ -36,4 +36,9 @@ export class DefaultCityService implements CityService {
   public async find(): Promise<DocumentType<CityEntity>[]> {
     return this.cityModel.find();
   }
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.cityModel
+      .exists({ _id: documentId })) !== null;
+  }
 }

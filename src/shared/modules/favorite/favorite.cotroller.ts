@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController } from '../../libs/rest/index.js';
+import { BaseController, ValidateDtoMiddleware } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { FavoriteService } from './favorite-service.interface.js';
@@ -8,6 +8,7 @@ import { Request, Response } from 'express';
 import { fillDTO } from '../../helpers/index.js';
 import { FavoriteRdo } from './rdo/favorite.rdo.js';
 import { CreateFavoriteRequest } from './create-favorite-request.type.js';
+import { CreateFavoriteDto } from './dto/create-favorite.dto.js';
 
 @injectable()
 export class FavoriteController extends BaseController {
@@ -19,7 +20,12 @@ export class FavoriteController extends BaseController {
 
     this.logger.info('Register routes for FavoriteController…');
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.add });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.add,
+      middlewares: [new ValidateDtoMiddleware(CreateFavoriteDto)]
+    });
     this.addRoute({ path: '/', method: HttpMethod.Delete, handler: this.delete });
   }
 
