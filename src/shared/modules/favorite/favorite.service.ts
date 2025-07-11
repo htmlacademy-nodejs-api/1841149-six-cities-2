@@ -14,7 +14,7 @@ export class DefaultFavoriteService implements FavoriteService {
     @inject(Component.FavoriteModel) private readonly favoriteModel: types.ModelType<FavoriteEntity>
   ) {}
 
-  public async create(dto: CreateFavoriteDto): Promise<DocumentType<FavoriteEntity>[]> {
+  public async create(dto: CreateFavoriteDto): Promise<DocumentType<FavoriteEntity>> {
     const favorite = await this.favoriteModel.create(dto);
     this.logger.info(`Created ${favorite.id}`);
     return favorite.populate(['offerIds']);
@@ -23,13 +23,18 @@ export class DefaultFavoriteService implements FavoriteService {
   public async findByUserId(userId: string): Promise<DocumentType<FavoriteEntity>[]> {
     return this.favoriteModel.find({ userId }).populate({
       path: 'offerIds',
-      populate: {
-        path: 'typeId'
-      }
+      populate: [
+        {
+          path: 'typeId',
+        },
+        {
+          path: 'cityId',
+        }
+      ]
     }).exec();
   }
 
-  public async deleteByUserIdAndOfferId(userId: string, offerId: string): Promise<DocumentType<FavoriteEntity>[] | []> {
+  public async deleteByUserIdAndOfferId(userId: string, offerId: string): Promise<DocumentType<FavoriteEntity>[] | null> {
     let result: DocumentType<FavoriteEntity>[] = [];
     const isDeleted = await this.favoriteModel.deleteOne(
       { userId: new Types.ObjectId(userId) },
@@ -61,7 +66,17 @@ export class DefaultFavoriteService implements FavoriteService {
         upsert: true,
         setDefaultsOnInsert: true
       }
-    );
+    ).populate({
+      path: 'offerIds',
+      populate: [
+        {
+          path: 'typeId',
+        },
+        {
+          path: 'cityId',
+        }
+      ]
+    }).exec();
 
     return updatedFavorite;
   }

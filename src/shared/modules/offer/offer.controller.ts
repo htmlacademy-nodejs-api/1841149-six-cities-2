@@ -3,7 +3,7 @@ import {
   HttpError,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware,
-  HttpMethod, DocumentExistsMiddleware
+  HttpMethod, DocumentExistsMiddleware, PrivateRouteMiddleware, ValidateAccessTokenMiddleware
 } from '../../libs/rest/index.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
@@ -24,6 +24,8 @@ import { CreateOfferCommentRequest } from './type/create-offer-comment-request.t
 import { CommentRdo } from '../comment/rdo/comment.rdo.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { CityService } from '../city/index.js';
+import { FavoriteService } from '../favorite/favorite-service.interface.js';
+import { AuthService } from '../auth/index.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -32,23 +34,33 @@ export class OfferController extends BaseController {
     @inject(Component.OfferService) private readonly offerService: OfferService,
     @inject(Component.CommentService) private readonly commentService: CommentService,
     @inject(Component.CityService) private readonly cityService: CityService,
+    @inject(Component.FavoriteService) private readonly favoriteService: FavoriteService,
+    @inject(Component.AuthService) private readonly authService: AuthService,
   ) {
     super(logger);
 
     this.logger.info('Register routes for OfferController…');
 
-    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Get,
+      handler: this.index
+    });
     this.addRoute({
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateOfferDto)
+      ]
     });
     this.addRoute({
       path: '/:offerId',
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(UpdateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
@@ -59,6 +71,8 @@ export class OfferController extends BaseController {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateAccessTokenMiddleware(this.authService),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ],
@@ -86,6 +100,8 @@ export class OfferController extends BaseController {
       method: HttpMethod.Post,
       handler:this.createComment,
       middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateAccessTokenMiddleware(this.authService),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(CreateCommentDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
@@ -113,27 +129,35 @@ export class OfferController extends BaseController {
     this.created(res, fillDTO(DetailOfferRdo, result));
   }
 
-  public async update({ params, body }: Request<ParamOfferId, unknown, UpdateOfferDto>, res: Response): Promise<void> {
+  public async update({ params, body, tokenPayload }: Request<ParamOfferId, unknown, UpdateOfferDto>, res: Response): Promise<void> {
     const { offerId } = params;
-    const result = await this.offerService.updateById(offerId, body);
-    this.ok(res, fillDTO(DetailOfferRdo, result));
+    const offer = await this.offerService.findById(offerId);
+
+    if (offer && offer.authorId === tokenPayload.id) {
+      const result = await this.offerService.updateById(offerId, body);
+      this.ok(res, fillDTO(DetailOfferRdo, result));
+    } else {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Вы пытаетесь отредактировать не свое предложение',
+        'OfferController'
+      );
+    }
   }
 
-  public async delete({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+  public async delete({ params, tokenPayload }: Request<ParamOfferId>, res: Response): Promise<void> {
     const { offerId } = params;
-    const offer = this.offerService.findById(offerId);
+    const offer = await this.offerService.findById(offerId);
 
-    // TODO из избранных
-    // TODO брать userId из токена
-
-    if (offerId) {
+    if (offer && offer.authorId === tokenPayload.id) {
       await this.offerService.deleteById(offerId);
       await this.commentService.deleteCommentsByOfferId(offerId);
+      await this.favoriteService.deleteByUserIdAndOfferId(tokenPayload.id, offerId);
       this.noContent(res, offer);
     } else {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
-        'Не указан user id',
+        'Вы пытаетесь отредактировать не свое предложение',
         'OfferController'
       );
     }
@@ -149,8 +173,9 @@ export class OfferController extends BaseController {
     this.ok(res, fillDTO(CommentRdo, comments));
   }
 
-  public async createComment({ body }: CreateOfferCommentRequest, res: Response) {
-    const comment = await this.commentService.create(body);
+  public async createComment({ body, tokenPayload }: CreateOfferCommentRequest, res: Response) {
+    // TODO выпилть offerId из body в параметры
+    const comment = await this.commentService.create({ ...body, authorId: tokenPayload.id });
     this.created(res, fillDTO(CommentRdo, comment));
   }
 

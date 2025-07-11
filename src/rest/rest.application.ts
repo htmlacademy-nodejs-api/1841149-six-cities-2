@@ -7,6 +7,7 @@ import { DatabaseClient } from '../shared/libs/database-client/index.js';
 import { getMongoURI } from '../shared/helpers/index.js';
 import { Controller, ExceptionFilter } from '../shared/libs/rest/index.js';
 import 'reflect-metadata';
+import { ParseTokenMiddleware } from '../shared/libs/rest/index.js';
 
 @injectable()
 export class RestApplication {
@@ -21,6 +22,8 @@ export class RestApplication {
     @inject(Component.FavoriteController) private readonly favoriteController: Controller,
     @inject(Component.OfferController) private readonly offerController: Controller,
     @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
+    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
+    @inject(Component.AuthController) private readonly authController: Controller,
   ) {
     this.server = express();
   }
@@ -38,11 +41,12 @@ export class RestApplication {
   }
 
   private async initControllers() {
-    this.server.use('/auth', this.userController.router);
+    this.server.use('/auth', this.authController.router);
     this.server.use('/offers', this.offerController.router);
     this.server.use('/types', this.typeController.router);
     this.server.use('/facilities', this.facilityController.router);
     this.server.use('/favorite', this.favoriteController.router);
+    this.server.use('/user', this.userController.router);
   }
 
   private async initServer() {
@@ -51,11 +55,14 @@ export class RestApplication {
   }
 
   private async initMiddlewares() {
+    const authentificationMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
     this.server.use(express.json());
     this.server.use(express.static(this.config.get('UPLOAD_DIRECTORY')));
+    this.server.use(authentificationMiddleware.execute.bind(authentificationMiddleware));
   }
 
   private async initExceptionFilters() {
+    this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
     this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
   }
 
