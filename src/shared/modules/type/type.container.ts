@@ -4,7 +4,7 @@ import { Component } from '../../types/index.js';
 import { DefaultTypeService } from './type.service.js';
 import { types } from '@typegoose/typegoose';
 import { TypeEntity, TypeModel } from './type.entity.js';
-import { Controller } from '../../../rest/index.js';
+import { Controller } from '../../libs/rest/index.js';
 import { TypeController } from './type.controller.js';
 
 export function createTypeContainer() {

@@ -1,4 +1,3 @@
-import { BaseController, HttpMethod } from '../../../rest/index.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -6,6 +5,7 @@ import { FacilityService } from './facility-service.interface.js';
 import { Request, Response } from 'express';
 import { fillDTO } from '../../helpers/index.js';
 import { FacilityRdo } from './rdo/facility.rdo.js';
+import { BaseController, HttpMethod } from '../../libs/rest/index.js';
 
 @injectable()
 export class FacilityController extends BaseController {

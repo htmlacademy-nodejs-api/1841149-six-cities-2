@@ -1,13 +1,15 @@
 import { inject, injectable } from 'inversify';
 import {
-  BaseController, DocumentExistsMiddleware,
-  PrivateRouteMiddleware, ValidateAccessTokenMiddleware,
+  BaseController,
+  DocumentExistsMiddleware,
+  HttpMethod,
+  PrivateRouteMiddleware,
+  ValidateAccessTokenMiddleware,
   ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { FavoriteService } from './favorite-service.interface.js';
-import { HttpMethod } from '../../../rest/index.js';
 import { Request, Response } from 'express';
 import { fillDTO } from '../../helpers/index.js';
 import { FavoriteRdo } from './rdo/favorite.rdo.js';

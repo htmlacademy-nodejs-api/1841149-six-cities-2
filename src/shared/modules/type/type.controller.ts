@@ -1,4 +1,3 @@
-import { BaseController, HttpMethod } from '../../../rest/index.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -6,6 +5,7 @@ import { Request, Response } from 'express';
 import { TypeService } from './type-service.interface.js';
 import { fillDTO } from '../../helpers/index.js';
 import { TypeRdo } from './rdo/type.rdo.js';
+import { BaseController, HttpMethod } from '../../libs/rest/index.js';
 
 @injectable()
 export class TypeController extends BaseController {

@@ -1,9 +1,12 @@
 import {
   BaseController,
+  DocumentExistsMiddleware,
   HttpError,
+  HttpMethod,
+  PrivateRouteMiddleware, UploadFileMiddleware, UploadMultiFilesMiddleware,
+  ValidateAccessTokenMiddleware,
   ValidateDtoMiddleware,
-  ValidateObjectIdMiddleware,
-  HttpMethod, DocumentExistsMiddleware, PrivateRouteMiddleware, ValidateAccessTokenMiddleware
+  ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
@@ -26,6 +29,9 @@ import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { CityService } from '../city/index.js';
 import { FavoriteService } from '../favorite/favorite-service.interface.js';
 import { AuthService } from '../auth/index.js';
+import { Config, RestSchema } from '../../libs/config/index.js';
+import { UploadImagePreviewRdo } from './rdo/upload-image-preview.rdo.js';
+import { UploadPhotosRdo } from './rdo/upload-photos.rdo.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -36,6 +42,7 @@ export class OfferController extends BaseController {
     @inject(Component.CityService) private readonly cityService: CityService,
     @inject(Component.FavoriteService) private readonly favoriteService: FavoriteService,
     @inject(Component.AuthService) private readonly authService: AuthService,
+    @inject(Component.Config) private readonly configService: Config<RestSchema>
   ) {
     super(logger);
 
@@ -53,6 +60,28 @@ export class OfferController extends BaseController {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateOfferDto)
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId/preview',
+      method: HttpMethod.Post,
+      handler: this.uploadPreview,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'imagePreview')
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId/photos',
+      method: HttpMethod.Post,
+      handler: this.uploadPhotos,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new UploadMultiFilesMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'imagePreview')
       ]
     });
     this.addRoute({
@@ -185,5 +214,23 @@ export class OfferController extends BaseController {
     const offer = await this.offerService.findById(offerId);
 
     return this.ok(res, fillDTO(DetailOfferRdo, offer));
+  }
+
+  public async uploadPreview({ params, file } : Request<ParamOfferId>, res: Response) {
+    const { offerId } = params;
+    const updateDto = { imagePreview: file?.filename };
+    await this.offerService.updateById(offerId, updateDto);
+    this.created(res, fillDTO(UploadImagePreviewRdo, updateDto));
+  }
+
+  public async uploadPhotos({ params, files } : Request<ParamOfferId>, res: Response) {
+    const { offerId } = params;
+
+    const uploadedFiles = files as Express.Multer.File[];
+
+    const photoFilenames = uploadedFiles?.map((file: Express.Multer.File) => file.filename).filter(Boolean) || [];
+    const updateDto = { photos: photoFilenames };
+    await this.offerService.updateById(offerId, updateDto);
+    this.created(res, fillDTO(UploadPhotosRdo, updateDto));
   }
 }

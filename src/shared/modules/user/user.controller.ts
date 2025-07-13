@@ -1,23 +1,28 @@
 import {
   BaseController,
+  HttpMethod,
   PrivateRouteMiddleware,
-  UploadFileMiddleware, ValidateAccessTokenMiddleware,
+  UploadFileMiddleware,
+  ValidateAccessTokenMiddleware,
   ValidateObjectIdMiddleware
 } from '../../libs/rest/index.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
-import { HttpMethod } from '../../../rest/index.js';
 import { Request, Response } from 'express';
 import { Config, RestSchema } from '../../libs/config/index.js';
 import { AuthService } from '../auth/index.js';
+import { UserService } from './user-service.interface.js';
+import { fillDTO } from '../../helpers/index.js';
+import { UploadUserAvatarRdo } from './rdo/upload-user-avatar.rdo.js';
 
 @injectable()
 export class UserController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.Config) private readonly configService: Config<RestSchema>,
-    @inject(Component.AuthService) private readonly authService: AuthService
+    @inject(Component.AuthService) private readonly authService: AuthService,
+    @inject(Component.UserService) private readonly userService: UserService,
   ) {
     super(logger);
     this.logger.info('Register routes for UserController…');
@@ -34,9 +39,10 @@ export class UserController extends BaseController {
     });
   }
 
-  public async uploadAvatar(req: Request, res: Response): Promise<void> {
-    this.created(res, {
-      filepath: req.file?.path
-    });
+  public async uploadAvatar({ params, file }: Request, res: Response) {
+    const { userId } = params;
+    const uploadFile = { avatar: file?.filename };
+    await this.userService.updateById(userId, uploadFile);
+    this.created(res, fillDTO(UploadUserAvatarRdo, { filepath: uploadFile.avatar }));
   }
 }

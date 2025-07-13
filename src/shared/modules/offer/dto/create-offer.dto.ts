@@ -1,10 +1,8 @@
 import {
-  IsArray,
   IsBoolean,
   IsDateString,
   IsInt,
   IsMongoId,
-  Length,
   Max,
   MaxLength,
   Min,
@@ -36,14 +34,6 @@ export class CreateOfferDto {
 
   @IsMongoId({ message: CreateOfferValidationMessage.cityId.invalid })
     cityId: string;
-
-  @MaxLength(256, { message: CreateOfferValidationMessage.imagePreview.maxLength })
-    imagePreview: string;
-
-  @IsArray({ message: CreateOfferValidationMessage.photos.invalidFormat })
-  @MaxLength(256, { each: true, message: CreateOfferValidationMessage.photos.maxLength })
-  @Length(6,6, { message: CreateOfferValidationMessage.photos.invalidCount })
-    photos: string[];
 
   @IsBoolean({ message: CreateOfferValidationMessage.isPremium.invalidFormat })
     isPremium: boolean;

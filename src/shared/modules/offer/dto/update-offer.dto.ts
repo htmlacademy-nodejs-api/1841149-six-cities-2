@@ -81,5 +81,5 @@ export class UpdateOfferDto {
 
   @ValidateNested({})
   @Type(() => CoordinatesDto)
-    coordinates: CoordinatesDto;
+    coordinates?: CoordinatesDto;
 }
