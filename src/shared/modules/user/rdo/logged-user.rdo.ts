@@ -4,6 +4,9 @@ import { UserType } from '../../../types/index.js';
 
 export class LoggedUserRdo {
   @Expose()
+  public id: string;
+
+  @Expose()
   public accessToken: string;
 
   @Expose()

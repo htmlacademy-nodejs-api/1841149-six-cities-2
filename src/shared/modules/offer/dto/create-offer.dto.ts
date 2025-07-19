@@ -59,8 +59,7 @@ export class CreateOfferDto {
   @IsMongoId({ each: true, message: CreateOfferValidationMessage.facilities.invalid })
     facilities: string[];
 
-  @IsMongoId({ message: CreateOfferValidationMessage.authorId.invalid })
-    authorId: string;
+  authorId: string;
 
   @ValidateNested({})
   @Type(() => CoordinatesDto)

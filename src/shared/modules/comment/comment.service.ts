@@ -23,7 +23,7 @@ export class DefaultCommentService implements CommentService {
     await this.offerService.incCommentCount(dto.offerId);
     await this.offerService.calculateRating(dto.offerId);
 
-    return result;
+    return result.populate('authorId');
   }
 
   public async findByOfferId(offerId: string): Promise<DocumentType<CommentEntity>[]> {

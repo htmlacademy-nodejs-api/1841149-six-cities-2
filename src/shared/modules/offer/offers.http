@@ -14,75 +14,76 @@ Content-Type: application/json
 ## Создать предложение
 POST http://localhost:4000/offers HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4tZG9lQGV4YW1wbGUuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwiaWQiOiI2ODZlOTQwYTI4OTE5NGEyNmUzYTMyYjMiLCJ1c2VyVHlwZSI6ImRlZmF1bHQiLCJpYXQiOjE3NTI1ODk5MzEsImV4cCI6MTc1Mjc2MjczMX0.WbAS1XkouvVwbacRvgA5GeBbsEyfVtwoWEWFuOB_17c
 
 {
-  "name": "Т",
+  "name": "asdadasdadsasd",
   "description": "Тестовое описания предложения об аренде",
   "publishDate": "2025-06-29T19:03:12.035Z",
-  "city": "Paris",
+  "cityId": "686d211ea0db1cee2faab28e",
   "imagePreview": "test-image-preview.jpg",
   "photos": ["test-image-preview.jpg", "test-image-preview-2.jpg", "test-image-preview-3.jpg"],
   "isPremium": false,
-  "typeId": "68603cbdc63ef51dd512168b",
+  "typeId": "686d211ea0db1cee2faab28b",
   "roomNumber": 3,
   "guestNumber": 2,
   "price": 1000,
   "facilities": [
-    "68603cbdc63ef51dd512164c",
-    "68603cbdc63ef51dd512164f",
-    "68603cbdc63ef51dd5121652",
-    "68603cbdc63ef51dd5121655",
-    "68603cbdc63ef51dd5121658",
-    "68603cbdc63ef51dd512165b",
-    "68603cbdc63ef51dd512165e"],
-  "authorId": "68603d9bdabc7df3999efb7e",
-  "coordinates": "68603cbdc63ef51dd512167d"
+    "686d211ea0db1cee2faab285"],
+  "coordinates": {
+    "latitude": 40,
+    "longitude": 50
+  }
 }
 
 ###
 
 ## Получить детальную информацию о предложении
-GET http://localhost:4000/offers/686d22155a6bfd4bd6a24944 HTTP/1.1
+GET http://localhost:4000/offers/686d22155a6bfd4bd6a24991 HTTP/1.1
 Content-Type: application/json
 
 ###
 
 ## Редактировать предложение
-PATCH http://localhost:4000/offers/686d22155a6bfd4bd6a249b6 HTTP/1.1
+PATCH http://localhost:4000/offers/68766d18dc5e35d9fd50845b HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4tZG9lQGV4YW1wbGUuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwiaWQiOiI2ODZlOTQwYTI4OTE5NGEyNmUzYTMyYjMiLCJ1c2VyVHlwZSI6ImRlZmF1bHQiLCJpYXQiOjE3NTI1ODk5MzEsImV4cCI6MTc1Mjc2MjczMX0.WbAS1XkouvVwbacRvgA5GeBbsEyfVtwoWEWFuOB_17c
 
 {
-  "roomNumber": 22
+  "roomNumber": 2
 }
 
 ###
 
 ## Удалить предложение
-DELETE http://localhost:4000/offers/68603cbdc63ef51dd51216cd HTTP/1.1
+DELETE http://localhost:4000/offers/6876696c607522674f1cb1c7 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4tZG9lQGV4YW1wbGUuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwiaWQiOiI2ODZlOTQwYTI4OTE5NGEyNmUzYTMyYjMiLCJ1c2VyVHlwZSI6ImRlZmF1bHQiLCJpYXQiOjE3NTI1ODk5MzEsImV4cCI6MTc1Mjc2MjczMX0.WbAS1XkouvVwbacRvgA5GeBbsEyfVtwoWEWFuOB_17c
 
 ###
 
 ## Получить список премиальных предложение по городу
-GET http://localhost:4000/offers/686553ebfd04a3262f0c6062/premium HTTP/1.1
+GET http://localhost:4000/offers/686d211ea0db1cee2faab28e/premium HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4tZG9lQGV4YW1wbGUuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwiaWQiOiI2ODZlOTQwYTI4OTE5NGEyNmUzYTMyYjMiLCJ1c2VyVHlwZSI6ImRlZmF1bHQiLCJpYXQiOjE3NTI1ODk5MzEsImV4cCI6MTc1Mjc2MjczMX0.WbAS1XkouvVwbacRvgA5GeBbsEyfVtwoWEWFuOB_17c
 
 ###
 
 ## Создать комментарий к предложению
-POST http://localhost:4000/offers/686d22155a6bfd4bd6a24944/comment HTTP/1.1
+POST http://localhost:4000/offers/686d22155a6bfd4bd6a2496a/comments HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4tZG9lQGV4YW1wbGUuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwiaWQiOiI2ODZlOTQwYTI4OTE5NGEyNmUzYTMyYjMiLCJ1c2VyVHlwZSI6ImRlZmF1bHQiLCJpYXQiOjE3NTI1OTcxMTgsImV4cCI6MTc1Mjc2OTkxOH0.UXXWD1EOeCslkK7O2cJbS8MuUIlN3Oyh_05l3b4lzWU
 
 {
   "text": "Тестовый комментарий к предложению.",
-  "rating": 3,
-  "offerId": "686d22155a6bfd4bd6a24944"
+  "rating": 3
 }
 
 ###
 
 ## Получить список комментариев к предложению
-GET http://localhost:4000/offers/686d22155a6bfd4bd6a24944/comment HTTP/1.1
+GET http://localhost:4000/offers/68767132bf4d15894fa613c4/comments HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImpvaG4tZG9lQGV4YW1wbGUuY29tIiwibmFtZSI6IkpvaG4gRG9lIiwiaWQiOiI2ODZlOTQwYTI4OTE5NGEyNmUzYTMyYjMiLCJ1c2VyVHlwZSI6ImRlZmF1bHQiLCJpYXQiOjE3NTI1ODk5MzEsImV4cCI6MTc1Mjc2MjczMX0.WbAS1XkouvVwbacRvgA5GeBbsEyfVtwoWEWFuOB_17c
 
 ###

@@ -87,6 +87,6 @@ export class FavoriteController extends BaseController {
     const { offerId } = params;
     const result = await this.favoriteService.deleteByUserIdAndOfferId(tokenPayload.id, offerId);
 
-    this.ok(res, fillDTO(FavoriteRdo, result));
+    this.noContent(res, fillDTO(FavoriteRdo, result));
   }
 }

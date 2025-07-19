@@ -18,7 +18,7 @@ export class DetailOfferRdo {
   @Expose()
   public publishDate: string;
 
-  @Expose()
+  @Expose({ name: 'cityId' })
   @Type(() => CityRdo)
   public city: CityRdo;
 

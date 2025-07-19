@@ -1,6 +1,7 @@
 import { Request } from 'express';
-import { RequestParams, RequestBody } from '../../../libs/rest/index.js';
+import { RequestBody } from '../../../libs/rest/index.js';
 import { CreateCommentDto } from '../../comment/index.js';
+import { ParamOfferId } from './param-offer-id.type.js';
 
 
-export type CreateOfferCommentRequest = Request<RequestParams, RequestBody, CreateCommentDto>;
+export type CreateOfferCommentRequest = Request<ParamOfferId, RequestBody, CreateCommentDto>;

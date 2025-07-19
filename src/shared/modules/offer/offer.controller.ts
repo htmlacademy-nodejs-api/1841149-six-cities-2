@@ -116,7 +116,7 @@ export class OfferController extends BaseController {
       ],
     });
     this.addRoute({
-      path: '/:offerId/comment',
+      path: '/:offerId/comments',
       method: HttpMethod.Get,
       handler: this.comments,
       middlewares: [
@@ -125,7 +125,7 @@ export class OfferController extends BaseController {
       ],
     });
     this.addRoute({
-      path: '/:offerId/comment',
+      path: '/:offerId/comments',
       method: HttpMethod.Post,
       handler:this.createComment,
       middlewares: [
@@ -153,16 +153,17 @@ export class OfferController extends BaseController {
     this.ok(res, fillDTO(OfferRdo, result));
   }
 
-  public async create({ body }: CreateOfferRequestType, res: Response): Promise<void> {
-    const result = await this.offerService.create(body);
-    this.created(res, fillDTO(DetailOfferRdo, result));
+  public async create({ body, tokenPayload }: CreateOfferRequestType, res: Response): Promise<void> {
+    const result = await this.offerService.create({ ...body, authorId: tokenPayload.id });
+    const offer = await this.offerService.findById(result.id);
+    this.created(res, fillDTO(DetailOfferRdo, offer));
   }
 
   public async update({ params, body, tokenPayload }: Request<ParamOfferId, unknown, UpdateOfferDto>, res: Response): Promise<void> {
     const { offerId } = params;
     const offer = await this.offerService.findById(offerId);
 
-    if (offer && offer.authorId === tokenPayload.id) {
+    if (offer && offer.authorId.id === tokenPayload.id) {
       const result = await this.offerService.updateById(offerId, body);
       this.ok(res, fillDTO(DetailOfferRdo, result));
     } else {
@@ -176,20 +177,11 @@ export class OfferController extends BaseController {
 
   public async delete({ params, tokenPayload }: Request<ParamOfferId>, res: Response): Promise<void> {
     const { offerId } = params;
-    const offer = await this.offerService.findById(offerId);
+    const offer = await this.offerService.deleteById(offerId);
+    await this.commentService.deleteCommentsByOfferId(offerId);
+    await this.favoriteService.deleteByUserIdAndOfferId(tokenPayload.id, offerId);
 
-    if (offer && offer.authorId === tokenPayload.id) {
-      await this.offerService.deleteById(offerId);
-      await this.commentService.deleteCommentsByOfferId(offerId);
-      await this.favoriteService.deleteByUserIdAndOfferId(tokenPayload.id, offerId);
-      this.noContent(res, offer);
-    } else {
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        'Вы пытаетесь отредактировать не свое предложение',
-        'OfferController'
-      );
-    }
+    this.noContent(res, offer);
   }
 
   public async premiumOfferByCity({ params }: Request<ParamCityPremiumOffers>, res: Response): Promise<void> {
@@ -202,9 +194,9 @@ export class OfferController extends BaseController {
     this.ok(res, fillDTO(CommentRdo, comments));
   }
 
-  public async createComment({ body, tokenPayload }: CreateOfferCommentRequest, res: Response) {
-    // TODO выпилть offerId из body в параметры
-    const comment = await this.commentService.create({ ...body, authorId: tokenPayload.id });
+  public async createComment({ params, body, tokenPayload }: CreateOfferCommentRequest, res: Response) {
+    const { offerId } = params;
+    const comment = await this.commentService.create({ ...body, offerId: offerId, authorId: tokenPayload.id });
     this.created(res, fillDTO(CommentRdo, comment));
   }
 

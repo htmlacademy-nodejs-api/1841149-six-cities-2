@@ -86,7 +86,7 @@ paths:
         - BearerAuth: []
 
       responses:
-        "200":
+        "204":
           description: Сеанс завершен.
 
         "400":
@@ -117,6 +117,45 @@ paths:
 
         "401":
           description: Ошибка аутентификации
+
+  /auth/refresh:
+    post:
+      tags:
+        - auth
+      summary: Обновление токенов
+      description: Возвращает обновленную информацию по пользователю
+      security:
+        - BearerAuth: []
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/refreshTokens'
+        required: true
+
+      responses:
+        "200":
+          description: Информация о пользователе.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/successLogin'
+
+        "400":
+          description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+  /user/{userID}/avatar:
+    post:
+      tags:
+        - users
+      summary: Загрузить изображение аватара
+      description: Загружает изображение аватара пользователя. Изображение
+        аватара должно быть в формате `png` или `jpg`.
 
   /offers:
     get:
@@ -180,68 +219,6 @@ paths:
 
         "401":
           description: Ошибка аутентификации
-
-    patch:
-      tags:
-        - offers
-      summary: Редактирование предложения
-      description: Редактирует предложение созданное пользователем
-      security:
-        - BearerAuth: []
-
-      requestBody:
-        description: Информация для редактирования нового предложения. Должно присутствовать хотя бы одно поле
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/editOffer'
-        required: true
-
-      responses:
-        "200":
-          description: Предложение успешно отредактировано. Объект предложения.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/offer'
-
-        "400":
-          description: Ошибка в корректности данных
-
-        "401":
-          description: Ошибка аутентификации
-
-        "403":
-          description: Вы пытаетесь изменить чужое предложение
-
-    delete:
-      tags:
-        - offers
-      summary: Удаление предложения
-      description: Удаление предложение созданное пользователем. Будут удалены все комментарии для этого предложения
-      security:
-        - BearerAuth: []
-
-      requestBody:
-        description: Информация для удаления предложения.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/deleteOffer'
-        required: true
-
-      responses:
-        "200":
-          description: Предложение успешно удалено.
-
-        "400":
-          description: Ошибка в корректности данных
-
-        "401":
-          description: Ошибка аутентификации
-
-        "403":
-          description: Вы пытаетесь удалить чужое предложение
 
   /offers/{city}/premium:
     get:
@@ -328,10 +305,77 @@ paths:
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/detailOffer'
+
+        "400":
+          description: Ошибка в корректности данных
+
+    patch:
+      tags:
+        - offers
+      summary: Редактирование предложения
+      description: Редактирует предложение созданное пользователем
+      security:
+        - BearerAuth: []
+
+      requestBody:
+        description: Информация для редактирования нового предложения. Должно присутствовать хотя бы одно поле
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/editOffer'
+        required: true
+
+      responses:
+        "200":
+          description: Предложение успешно отредактировано. Объект предложения.
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/offer'
 
         "400":
           description: Ошибка в корректности данных
+
+        "401":
+          description: Ошибка аутентификации
+
+        "403":
+          description: Вы пытаетесь изменить чужое предложение
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения
+      description: Удаление предложение созданное пользователем. Будут удалены все комментарии для этого предложения
+      security:
+        - BearerAuth: []
+
+      responses:
+        "204":
+          description: Предложение успешно удалено.
+
+        "401":
+          description: Ошибка аутентификации
+
+        "403":
+          description: Вы пытаетесь удалить чужое предложение
+
+  /offers/{offerId}/preview:
+    post:
+      tags:
+        - offers
+      summary: Загрузить первью для предложения
+      description: Загружает первью для предложения. Изображение
+        должно быть в формате `png` или `jpg`.
+
+  /offers/{offerId}/photos:
+    post:
+      tags:
+        - offers
+      summary: Загрузить фотографий для предложения
+      description: Загружает фотографий для предложения. Изображение
+        должны быть в формате `png` или `jpg`.
 
   /types:
     get:
@@ -370,28 +414,29 @@ paths:
           description: Ошибка в корректности данных
 
   /favorite:
-    get:
-      tags:
-        - favorite
-      summary: Получить список избранных предложений
-      description: Получить список избранных предложений пользователя
-      security:
-        - BearerAuth: []
+      get:
+        tags:
+          - favorite
+        summary: Получить список избранных предложений
+        description: Получить список избранных предложений пользователя
+        security:
+          - BearerAuth: []
 
-      responses:
-        "200":
-          description: Массив объектов избранных предложений.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getFavorite'
+        responses:
+          "200":
+            description: Массив объектов избранных предложений.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/getFavorite'
 
-        "400":
-          description: Ошибка в корректности данных
+          "400":
+            description: Ошибка в корректности данных
 
-        "401":
-          description: Ошибка аутентификации
+          "401":
+            description: Ошибка аутентификации
 
+  /favorite/{offerId}:
     post:
       tags:
         - favorite
@@ -399,14 +444,6 @@ paths:
       description: Добавить выбранное предложение в избранное
       security:
         - BearerAuth: []
-
-      requestBody:
-        description: Информация для добавления предложения в избранное.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/favoriteRequestBody'
-        required: true
 
       responses:
         "200":
@@ -430,16 +467,8 @@ paths:
       security:
         - BearerAuth: []
 
-      requestBody:
-        description: Информация для удаления предложения из избранного.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/favoriteRequestBody'
-        required: true
-
       responses:
-        "200":
+        "204":
           description: Удаление предложения из избранного.
 
         "400":
@@ -471,11 +500,6 @@ components:
           description: Email пользователя
           example: example@example.com
 
-        avatar:
-          type: string
-          description: Ссылка на аватарку
-          example: 'example.com'
-
         password:
           type: string
           example: 123456
@@ -498,6 +522,15 @@ components:
           description: Пароль пользователя
           example: 123456
 
+    refreshTokens:
+      type: object
+
+      properties:
+        refreshToken:
+          type: string
+          description: Токен обновления
+          example: supersecret
+
     successLogin:
       type: object
 
@@ -507,10 +540,16 @@ components:
           description: Токен авторизации
           example: supersecret
 
-    user:
-      type: object
+        refreshToken:
+          type: string
+          description: Токен обновления
+          example: supersecret
 
-      properties:
+        id:
+          type: string
+          description: ID пользователя
+          example: 123
+
         name:
           type: string
           description: Имя пользователя
@@ -526,7 +565,37 @@ components:
           description: Ссылка на аватарку
           example: 'example.com'
 
-        type:
+        userType:
+          type: string
+          enum:
+            - default
+            - pro
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          description: ID пользователя
+          example: 123
+
+        name:
+          type: string
+          description: Имя пользователя
+          example: Иван Иванов
+
+        email:
+          type: string
+          description: Email пользователя
+          example: example@example.com
+
+        avatar:
+          type: string
+          description: Ссылка на аватарку
+          example: 'example.com'
+
+        userType:
           type: string
           enum:
             - default
@@ -629,10 +698,6 @@ components:
       type: object
 
       properties:
-        id:
-          type: number
-          description: ID предложения
-          example: 123
         name:
           type: string
           description: Наименование предложения
@@ -649,10 +714,10 @@ components:
           type: string
           description: Дата публикации
           example: 12.06.2025
-        city:
+        cityId:
           type: string
-          description: Город. Один из возможных вариант из справочника городов.
-          example: Paris
+          description: Id города
+          example: 123
         imagePreview:
           type: string
           description: Ссылка на изображения для превью
@@ -671,17 +736,10 @@ components:
           type: boolean
           description: Флаг для премиального предложения
           example: true
-        isFavorite:
-          type: boolean
-          description: Флаг для избранного предложения
-          example: true
-        rating:
-          type: number
-          description: Рейтинг предложения
-        type:
+        typeId:
           type: string
-          description: Тип жилья из справочника типов жилья
-          example: apartment
+          description: Id типа предложения
+          example: 123
         roomNumber:
           type: number
           description: Количество комнат
@@ -701,16 +759,11 @@ components:
           maximum: 100000
         facilities:
           type: array
-          description: Список удобств
-          example: ['Breakfast', 'Air conditioning']
+          description: Список ID удобств
+          example: ['123', '456']
           items:
             type: string
           minItems: 1
-        author:
-          $ref: '#/components/schemas/user'
-        commentsCount:
-          type: number
-          description: Количество комментариев
         coordinates:
           type: object
           properties:
@@ -738,9 +791,17 @@ components:
             description: Наименование предложения
             example: Сдаю 1-к комнатную квартиру
           city:
-            type: string
+            type: object
             description: Город. Один из возможных вариант из справочника городов.
-            example: Paris
+            properties:
+              id:
+                type: number
+                description: ID города
+                example: 123
+              name:
+                type: string
+                description: Наименование города
+                example: Paris
           imagePreview:
             type: string
             description: Ссылка на изображения для превью
@@ -755,9 +816,17 @@ components:
             description: Флаг для избранного предложения
             example: true
           type:
-            type: string
+            type: object
             description: Тип жилья из справочника типов жилья
-            example: apartment
+            properties:
+              id:
+                type: number
+                description: ID типа
+                example: 123
+              name:
+                type: string
+                description: Наименование тип
+                example: apartment
           price:
             type: number
             description: Цена
@@ -769,6 +838,88 @@ components:
             type: number
             description: Количество комментариев
             example: 0
+
+    detailOffer:
+      type: object
+
+      properties:
+        name:
+          type: string
+          description: Наименование предложения
+          example: Сдаю 1-к комнатную квартиру
+          minLength: 10
+          maxLength: 100
+        description:
+          type: string
+          description: Описание предложения
+          example: Просторная квартира с видом на море
+          minLength: 20
+          maxLength: 1024
+        publishDate:
+          type: string
+          description: Дата публикации
+          example: 12.06.2025
+        cityId:
+          type: string
+          description: Id города
+          example: 123
+        imagePreview:
+          type: string
+          description: Ссылка на изображения для превью
+          example: https://example.com
+          format: uri
+        photos:
+          type: array
+          description: Список ссылок на фотографии жилья
+          example: ['https://example.com','https://example.com','https://example.com','https://example.com','https://example.com','https://example.com']
+          items:
+            type: string
+            format: uri
+          minItems: 6
+          maxItems: 6
+        isPremium:
+          type: boolean
+          description: Флаг для премиального предложения
+          example: true
+        typeId:
+          type: string
+          description: Id типа предложения
+          example: 123
+        roomNumber:
+          type: number
+          description: Количество комнат
+          example: 1
+          minimum: 1
+          maximum: 8
+        guestNumber:
+          type: number
+          description: Количество гостей
+          example: 1
+          minimum: 1
+          maximum: 10
+        price:
+          type: number
+          description: Цена
+          minimum: 100
+          maximum: 100000
+        facilities:
+          type: array
+          description: Список ID удобств
+          example: ['123', '456']
+          items:
+            type: string
+          minItems: 1
+        coordinates:
+          type: object
+          properties:
+            longitude:
+              type: number
+              description: Широта
+              example: 53.550341
+            latitude:
+              type: number
+              description: Долгота
+              example: 10.000654
 
     getFavorite:
       type: object
@@ -792,24 +943,20 @@ components:
           description: Рейтинг поставленный предложению
           example: 5
           minimum: 1
-          maximum: 8
-        authorId:
-          type: number
-          description: ID пользователя
-          example: 123
+          maximum: 5
 
     comment:
       type: object
 
       properties:
+        id:
+          type: string
+          description: ID комментария
+          example: '123'
         text:
           type: string
           description: Текст комментария
           example: Отель был супер, приедем еще.
-        postDate:
-          type: string
-          description: Дата публикации комментария
-          example: 14.06.2025
         rating:
           type: number
           description: Рейтинг поставленный предложению

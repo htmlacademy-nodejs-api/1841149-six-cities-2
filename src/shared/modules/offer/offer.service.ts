@@ -37,7 +37,7 @@ export class DefaultOfferService implements OfferService {
       throw new HttpError(StatusCodes.BAD_REQUEST, 'Type not exists', 'OfferService');
     }
 
-    const foundFacilities = this.facilityModel.find({ _id: { $in: dto.facilities } });
+    const foundFacilities = await this.facilityModel.find({ _id: { $in: dto.facilities } });
 
     if (foundFacilities.length !== dto.facilities.length) {
       throw new HttpError(StatusCodes.BAD_REQUEST, 'Some facilities not exists', 'OfferService');
@@ -158,8 +158,6 @@ export class DefaultOfferService implements OfferService {
         { $unset: ['comments', 'ratings'] },
       ])
       .exec();
-
-    console.log(result);
 
     const calculatedRating = result[0]?.rating.toFixed(1) ?? 0;
 
