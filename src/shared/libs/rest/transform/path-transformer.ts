@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { inject, injectable } from 'inversify';
 import { DEFAULT_STATIC_IMAGES, STATIC_RESOURCE_FIELDS } from './path-transformer.constant.js';
 import { Component } from '../../../types/index.js';
