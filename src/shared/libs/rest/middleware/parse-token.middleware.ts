@@ -39,7 +39,6 @@ export class ParseTokenMiddleware implements Middleware {
         throw new Error('Bad token');
       }
     } catch {
-
       return next(new HttpError(
         StatusCodes.UNAUTHORIZED,
         'Invalid token',

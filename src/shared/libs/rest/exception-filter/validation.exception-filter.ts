@@ -17,7 +17,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 
   public catch(error: unknown,_req: Request, res: Response, next: NextFunction) {
     if(!(error instanceof ValidationError)) {
-      return next();
+      return next(error);
     }
 
     this.logger.error(`[ValidationException]: ${error.message}`, error);

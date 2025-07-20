@@ -15,11 +15,7 @@ export class ValidateAccessTokenMiddleware implements Middleware {
     const authorizationHeader = req.headers?.authorization?.split(' ');
 
     if (!authorizationHeader) {
-      return next(new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Authorization header missing',
-        'ValidateAccessTokenMiddleware',
-      ));
+      return next();
     }
 
     const [, token] = authorizationHeader;
