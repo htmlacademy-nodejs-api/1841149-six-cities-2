@@ -15,7 +15,6 @@ export class AuthExceptionFilter implements ExceptionFilter {
 
   public catch(error: unknown, _req: Request, res: Response, next: NextFunction): void {
     if (!(error instanceof BaseUserException)) {
-      console.log('321');
       return next(error);
     }
 

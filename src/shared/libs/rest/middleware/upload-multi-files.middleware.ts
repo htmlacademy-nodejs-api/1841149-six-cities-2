@@ -1,3 +1,4 @@
+
 import { Middleware } from './middleware.interface.js';
 import { NextFunction, Request, Response } from 'express';
 import multer, { diskStorage } from 'multer';
@@ -8,6 +9,7 @@ export class UploadMultiFilesMiddleware implements Middleware {
   constructor(
     private uploadDirectory: string,
     private fieldName: string,
+    private maxCount?: number,
   ) {}
 
   public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -21,8 +23,8 @@ export class UploadMultiFilesMiddleware implements Middleware {
       }
     });
 
-    const uploadMultiFilesMiddleware = multer({ storage }).array(this.fieldName);
+    const uploadMultipleFilesMiddleware = multer({ storage }).array(this.fieldName, this.maxCount);
 
-    uploadMultiFilesMiddleware(req, res, next);
+    uploadMultipleFilesMiddleware(req, res, next);
   }
 }

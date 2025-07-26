@@ -1,4 +1,4 @@
-import { Expose, Transform, Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { FacilityRdo } from '../../facility/index.js';
 import { UserRdo } from '../../user/rdo/user.rdo.js';
 import { Coordinates } from '../../../types/index.js';
@@ -26,7 +26,7 @@ export class DetailOfferRdo {
   public imagePreview: string;
 
   @Expose()
-  public photos: string;
+  public photos: string[];
 
   @Expose()
   public isPremium: boolean;
@@ -53,7 +53,6 @@ export class DetailOfferRdo {
 
   @Expose({ name: 'typeId' })
   @Type(() => TypeRdo)
-  @Transform(({ obj }) => obj.typeId?.name)
   public type: TypeRdo;
 
   @Expose()

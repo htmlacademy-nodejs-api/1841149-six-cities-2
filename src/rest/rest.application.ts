@@ -23,6 +23,7 @@ export class RestApplication {
     @inject(Component.FacilityController) private readonly facilityController: Controller,
     @inject(Component.FavoriteController) private readonly favoriteController: Controller,
     @inject(Component.OfferController) private readonly offerController: Controller,
+    @inject(Component.CityController) private readonly cityController: Controller,
     @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
     @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
     @inject(Component.AuthController) private readonly authController: Controller,
@@ -51,6 +52,7 @@ export class RestApplication {
     this.server.use('/facilities', this.facilityController.router);
     this.server.use('/favorite', this.favoriteController.router);
     this.server.use('/user', this.userController.router);
+    this.server.use('/cities', this.cityController.router);
   }
 
   private async initServer() {

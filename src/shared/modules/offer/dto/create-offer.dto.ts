@@ -2,7 +2,7 @@ import {
   IsBoolean,
   IsDateString,
   IsInt,
-  IsMongoId,
+  IsMongoId, IsNumber,
   Max,
   MaxLength,
   Min,
@@ -13,10 +13,10 @@ import { CreateOfferValidationMessage } from './create-offer.message.js';
 import { Type } from 'class-transformer';
 
 class CoordinatesDto {
-  @IsInt({ message: CreateOfferValidationMessage.coordinates.latitude.invalid })
+  @IsNumber({}, { message: CreateOfferValidationMessage.coordinates.latitude.invalid })
     latitude: number;
 
-  @IsInt({ message: CreateOfferValidationMessage.coordinates.longitude.invalid })
+  @IsNumber({}, { message: CreateOfferValidationMessage.coordinates.longitude.invalid })
     longitude: number;
 }
 

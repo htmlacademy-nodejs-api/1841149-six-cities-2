@@ -13,6 +13,7 @@ import { TypeEntity } from '../type/index.js';
 import { FacilityEntity } from '../facility/index.js';
 import { HttpError } from '../../libs/rest/index.js';
 import { StatusCodes } from 'http-status-codes';
+import { FavoriteEntity } from '../favorite/index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -21,7 +22,8 @@ export class DefaultOfferService implements OfferService {
     @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>,
     @inject(Component.CityModel) private readonly cityModel: types.ModelType<CityEntity>,
     @inject(Component.TypeModel) private readonly typeModel: types.ModelType<TypeEntity>,
-    @inject(Component.FacilityModel) private readonly facilityModel: types.ModelType<FacilityEntity>
+    @inject(Component.FacilityModel) private readonly facilityModel: types.ModelType<FacilityEntity>,
+    @inject(Component.FavoriteModel) private readonly favoriteModel: types.ModelType<FavoriteEntity>,
   ) {}
 
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
@@ -48,20 +50,60 @@ export class DefaultOfferService implements OfferService {
     return result;
   }
 
-  public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel
+  public async findById(offerId: string, userId?: string): Promise<DocumentType<OfferEntity> | null> {
+    const offer = await this.offerModel
       .findById(offerId)
       .populate(['typeId', 'authorId', 'facilities', 'cityId'])
       .exec();
+
+    if (!offer) {
+      return null;
+    }
+
+    if (userId) {
+      const isFavorite = await this.favoriteModel
+        .exists({
+          userId: userId,
+          offerIds: offerId
+        });
+
+      offer.isFavorite = !!isFavorite;
+    }
+
+    return offer;
   }
 
-  public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel
+  public async find(count?: number, userId?: string): Promise<DocumentType<OfferEntity>[]> {
+    const offers = await this.offerModel
       .find()
-      .sort({ publishData: SortType.Down })
+      .sort({ publishDate: SortType.Down })
       .limit(count ? count : DEFAULT_OFFER_COUNT)
       .populate(['typeId', 'authorId', 'facilities', 'cityId'])
       .exec();
+
+    if (!userId) {
+      return offers;
+    }
+
+    const offerIds = offers.map((offer) => offer._id);
+    const favoriteRecords = await this.favoriteModel
+      .find({
+        userId: userId,
+        offerIds: { $in: offerIds }
+      })
+      .select('offerIds')
+      .exec();
+
+
+    const favoriteOfferIds = favoriteRecords
+      .map((record) => record.offerIds.toString())
+      .flatMap((record) => record.split(','));
+
+    offers.forEach((offer) => {
+      offer.isFavorite = favoriteOfferIds.includes(offer.id);
+    });
+
+    return offers;
   }
 
   public async deleteById(id: string): Promise<DocumentType<OfferEntity> | null> {
@@ -88,7 +130,8 @@ export class DefaultOfferService implements OfferService {
     }
 
     if (dto.facilities) {
-      const foundFacilities = this.facilityModel.find({ _id: { $in: dto.facilities } });
+
+      const foundFacilities = await this.facilityModel.find({ _id: { $in: dto.facilities } });
 
       if (foundFacilities.length !== dto.facilities.length) {
         throw new HttpError(StatusCodes.BAD_REQUEST, 'Some facilities not exists', 'OfferService');
@@ -103,7 +146,7 @@ export class DefaultOfferService implements OfferService {
 
   public async findPremiumByCity(cityId: string): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({ cityId: cityId }, {})
+      .find({ cityId: cityId, isPremium: true }, {})
       .sort({ publishData: SortType.Up })
       .limit(DEFAULT_PREMIUM_COUNT)
       .populate(['typeId', 'authorId', 'facilities', 'cityId'])

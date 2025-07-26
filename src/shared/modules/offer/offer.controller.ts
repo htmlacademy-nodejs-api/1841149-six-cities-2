@@ -81,7 +81,7 @@ export class OfferController extends BaseController {
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
-        new UploadMultiFilesMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'imagePreview')
+        new UploadMultiFilesMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'photos')
       ]
     });
     this.addRoute({
@@ -147,9 +147,9 @@ export class OfferController extends BaseController {
     });
   }
 
-  public async index({ params }: Request<ParamOfferCount>, res: Response) {
+  public async index({ params, tokenPayload }: Request<ParamOfferCount>, res: Response) {
     const { count } = params;
-    const result = await this.offerService.find(Number(count));
+    const result = await this.offerService.find(Number(count), tokenPayload?.id);
     this.ok(res, fillDTO(OfferRdo, result));
   }
 
@@ -200,10 +200,10 @@ export class OfferController extends BaseController {
     this.created(res, fillDTO(CommentRdo, comment));
   }
 
-  public async detail({ params }: Request<ParamOfferId>, res: Response) {
+  public async detail({ params, tokenPayload }: Request<ParamOfferId>, res: Response) {
     const { offerId } = params;
 
-    const offer = await this.offerService.findById(offerId);
+    const offer = await this.offerService.findById(offerId, tokenPayload.id);
 
     return this.ok(res, fillDTO(DetailOfferRdo, offer));
   }
@@ -211,6 +211,7 @@ export class OfferController extends BaseController {
   public async uploadPreview({ params, file } : Request<ParamOfferId>, res: Response) {
     const { offerId } = params;
     const updateDto = { imagePreview: file?.filename };
+
     await this.offerService.updateById(offerId, updateDto);
     this.created(res, fillDTO(UploadImagePreviewRdo, updateDto));
   }

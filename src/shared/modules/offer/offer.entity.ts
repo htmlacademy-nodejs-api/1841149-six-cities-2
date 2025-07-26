@@ -20,7 +20,7 @@ export class OfferEntity {
   @prop({ required: true, minlength: 10, maxlength: 100 })
   public name: string;
 
-  @prop({ required: true, minlength: 20, maxlength: 100 })
+  @prop({ required: true, minlength: 20, maxlength: 1024 })
   public description: string;
 
   @prop({ required: true })
@@ -32,10 +32,10 @@ export class OfferEntity {
   })
   public cityId!: Ref<CityEntity>;
 
-  @prop({ required: true })
+  @prop()
   public imagePreview: string;
 
-  @prop({ required: true })
+  @prop()
   public photos: string[];
 
   @prop({ required: true })

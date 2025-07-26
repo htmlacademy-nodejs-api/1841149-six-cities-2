@@ -37,19 +37,28 @@ export class PathTransformer {
         if (Object.hasOwn(current, key)) {
           const value = current[key];
 
-          if (isObject(value)) {
+          if (this.isStaticProperty(key)) {
+            if (typeof value === 'string') {
+              const staticPath = STATIC_FILES_ROUTE;
+              const uploadPath = STATIC_UPLOAD_ROUTE;
+              const serverHost = this.config.get('HOST');
+              const serverPort = this.config.get('PORT');
+
+              const rootPath = this.hasDefaultImage(value) ? staticPath : uploadPath;
+              current[key] = `${getFullServerPath(serverHost, serverPort)}${rootPath}/${value}`;
+            } else if (Array.isArray(value) && value.every((item) => typeof item === 'string')) {
+              const staticPath = STATIC_FILES_ROUTE;
+              const uploadPath = STATIC_UPLOAD_ROUTE;
+              const serverHost = this.config.get('HOST');
+              const serverPort = this.config.get('PORT');
+
+              current[key] = value.map((filename: string) => {
+                const rootPath = this.hasDefaultImage(filename) ? staticPath : uploadPath;
+                return `${getFullServerPath(serverHost, serverPort)}${rootPath}/${filename}`;
+              });
+            }
+          } else if (isObject(value)) {
             stack.push(value);
-            continue;
-          }
-
-          if (this.isStaticProperty(key) && typeof value === 'string') {
-            const staticPath = STATIC_FILES_ROUTE;
-            const uploadPath = STATIC_UPLOAD_ROUTE;
-            const serverHost = this.config.get('HOST');
-            const serverPort = this.config.get('PORT');
-
-            const rootPath = this.hasDefaultImage(value) ? staticPath : uploadPath;
-            current[key] = `${getFullServerPath(serverHost, serverPort)}${rootPath}/${value}`;
           }
         }
       }

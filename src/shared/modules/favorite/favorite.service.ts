@@ -36,7 +36,8 @@ export class DefaultFavoriteService implements FavoriteService {
 
   public async deleteByUserIdAndOfferId(userId: string, offerId: string): Promise<DocumentType<FavoriteEntity>[] | null> {
     let result: DocumentType<FavoriteEntity>[] = [];
-    const isDeleted = await this.favoriteModel.deleteOne(
+
+    const isUpdated = await this.favoriteModel.updateOne(
       { userId: new Types.ObjectId(userId) },
       {
         $pull: {
@@ -45,7 +46,7 @@ export class DefaultFavoriteService implements FavoriteService {
       }
     );
 
-    if (isDeleted.deletedCount) {
+    if (isUpdated.modifiedCount > 0) {
       result = await this.findByUserId(userId);
     }
 
