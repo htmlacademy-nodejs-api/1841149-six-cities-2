@@ -2,6 +2,7 @@ import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { Error } from 'mongoose';
 import { ApplicationError, ValidationErrorField } from '../libs/rest/index.js';
 import { ValidationError } from 'class-validator';
+import { City } from '../types/index.js';
 
 export function generateRandomValue(min:number, max: number, numAfterDigit = 0) {
   return +((Math.random() * (max - min)) + min).toFixed(numAfterDigit);
@@ -42,4 +43,28 @@ export function reduceValidationErrors(errors: ValidationError[]): ValidationErr
 
 export function getFullServerPath(host: string, port: number) {
   return `http://${host}:${port}`;
+}
+
+export function getRentalFacility(facilityData: string): string {
+  const [name] = facilityData.replace('\n', '').split('\t');
+
+  return name;
+}
+
+export function getRentalType(typeData: string): string {
+  const [name] = typeData.replace('\n', '').split('\t');
+
+  return name;
+}
+
+export function getRentalCity(cityData: string): City {
+  const [name, latitude, longitude] = cityData.replace('\n', '').split(';');
+
+  return {
+    name,
+    location: {
+      latitude: Number(latitude),
+      longitude: Number(longitude)
+    }
+  };
 }

@@ -18,6 +18,8 @@ tags:
     description: Действия с типами предложений.
   - name: facilities
     description: Действия с типами удобств.
+  - name: cities
+    description: Действия с городами.
   - name: favorite
     description: Действия с избранным.
 paths:
@@ -391,6 +393,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/types'
+
+        "400":
+          description: Ошибка в корректности данных
+
+  /cities:
+    get:
+      tags:
+        - cities
+      summary: Список городов и их координаты
+      description: Возвращает список городов и их координаты
+
+      responses:
+        "200":
+          description: Массив объектов с типами предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cities'
 
         "400":
           description: Ошибка в корректности данных
@@ -802,6 +822,15 @@ components:
                 type: string
                 description: Наименование города
                 example: Paris
+              location:
+                type: object
+                properties:
+                  latitude:
+                    type: number
+                    example: 50.2345
+                  longitude:
+                    type: number
+                    example: 50.2345
           imagePreview:
             type: string
             description: Ссылка на изображения для превью
@@ -859,10 +888,27 @@ components:
           type: string
           description: Дата публикации
           example: 12.06.2025
-        cityId:
-          type: string
-          description: Id города
-          example: 123
+        city:
+            type: object
+            description: Город. Один из возможных вариант из справочника городов.
+            properties:
+              id:
+                type: number
+                description: ID города
+                example: 123
+              name:
+                type: string
+                description: Наименование города
+                example: Paris
+              location:
+                type: object
+                properties:
+                  latitude:
+                    type: number
+                    example: 50.2345
+                  longitude:
+                    type: number
+                    example: 50.2345
         imagePreview:
           type: string
           description: Ссылка на изображения для превью
@@ -944,6 +990,33 @@ components:
           example: 5
           minimum: 1
           maximum: 5
+
+    city:
+      type: object
+      description: Город. Один из возможных вариант из справочника городов.
+      properties:
+        id:
+          type: string
+          description: ID города
+          example: '123'
+        name:
+          type: string
+          description: Наименование города
+          example: Paris
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 50.2345
+            longitude:
+              type: number
+              example: 50.2345
+
+    cities:
+      type: array
+      items:
+        $ref: '#/components/schemas/city'
 
     comment:
       type: object

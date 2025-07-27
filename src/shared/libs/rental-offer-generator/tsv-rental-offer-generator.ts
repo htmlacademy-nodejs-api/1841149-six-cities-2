@@ -1,4 +1,4 @@
-import { MockServerData } from '../../types/index.js';
+import { City, MockServerData } from '../../types/index.js';
 import { generateRandomBoolean, generateRandomValue, getRandomItem, getRandomItems } from '../../helpers/index.js';
 import dayjs from 'dayjs';
 
@@ -25,7 +25,6 @@ export class TSVRentalOfferGenerator {
   public generate(): string {
     const name = getRandomItem<string>(this.mockData.names);
     const description = getRandomItem<string>(this.mockData.descriptions);
-    const city = getRandomItem<string>(this.mockData.cities);
     const imagePreview = getRandomItem<string>(this.mockData.imagePreviews);
     const photos = getRandomItems<string>(this.mockData.photos, PHOTOS_COUNT).join(';');
     const isPremium = generateRandomBoolean();
@@ -43,6 +42,9 @@ export class TSVRentalOfferGenerator {
     const publishDate = dayjs()
       .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')
       .toISOString();
+
+    const selectedCity = getRandomItem<City>(this.mockData.cities);
+    const city = `${selectedCity.name};${selectedCity.location.latitude};${selectedCity.location.longitude}`;
 
 
     return [

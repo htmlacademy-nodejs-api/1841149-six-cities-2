@@ -32,10 +32,10 @@ export class OfferEntity {
   })
   public cityId!: Ref<CityEntity>;
 
-  @prop()
+  @prop({ required: false, default: 'placeholder-avatar.png' })
   public imagePreview: string;
 
-  @prop()
+  @prop({ required: false, default: ['placeholder-avatar.png', 'placeholder-avatar.png', 'placeholder-avatar.png', 'placeholder-avatar.png', 'placeholder-avatar.png', 'placeholder-avatar.png'] })
   public photos: string[];
 
   @prop({ required: true })
