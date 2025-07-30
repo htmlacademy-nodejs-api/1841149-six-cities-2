@@ -31,15 +31,6 @@ export class ImportCommand implements Command {
   private totalFiles = 4;
 
   constructor() {
-    this.onImportedLine = this.onImportedLine.bind(this);
-    this.onImportFacilityLine = this.onImportFacilityLine.bind(this);
-    this.onImportTypeLine = this.onImportTypeLine.bind(this);
-    this.onImportCityLine = this.onImportCityLine.bind(this);
-    this.onCompleteImport = this.onCompleteImport.bind(this);
-    this.onCompleteFacilitiesImport = this.onCompleteFacilitiesImport.bind(this);
-    this.onCompleteTypeImport = this.onCompleteTypeImport.bind(this);
-    this.onCompleteCitiesImport = this.onCompleteCitiesImport.bind(this);
-
     this.logger = new ConsoleLogger();
     this.facilityService = new DefaultFacilityService(this.logger, FacilityModel);
     this.offerService = new DefaultOfferService(this.logger, OfferModel, CityModel, TypeModel, FacilityModel, FavoriteModel);
@@ -49,53 +40,53 @@ export class ImportCommand implements Command {
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
-  private async onImportedLine(line: string, resolve: () => void) {
+  private onImportedLine = async (line: string, resolve: () => void) => {
     const offer = generateRentalOffer(line);
     await this.saveOffer(offer);
     resolve();
-  }
+  };
 
-  private async onImportFacilityLine(line: string, resolve: () => void) {
+  private onImportFacilityLine = async (line: string, resolve: () => void) => {
     const facility = getRentalFacility(line);
     await this.saveFacility(facility);
     resolve();
-  }
+  };
 
-  private async onImportTypeLine(line: string, resolve: () => void) {
+  private onImportTypeLine = async (line: string, resolve: () => void) => {
     const type = getRentalType(line);
     await this.saveType(type);
     resolve();
-  }
+  };
 
-  private async onImportCityLine(line: string, resolve: () => void) {
+  private onImportCityLine = async (line: string, resolve: () => void) => {
     const city = getRentalCity(line);
     await this.saveCity(city);
     resolve();
-  }
+  };
 
-  private async onCompleteImport(count: number) {
+  private onCompleteImport = async (count: number)=> {
     console.info(`${count} offers imported.`);
     this.completedFiles++;
     await this.checkAllImportsComplete();
-  }
+  };
 
-  private async onCompleteTypeImport(count: number) {
+  private onCompleteTypeImport = async (count: number)=> {
     console.info(`${count} types imported.`);
     this.completedFiles++;
     await this.checkAllImportsComplete();
-  }
+  };
 
-  private async onCompleteFacilitiesImport(count: number) {
+  private onCompleteFacilitiesImport = async (count: number) => {
     console.info(`${count} facilities imported.`);
     this.completedFiles++;
     await this.checkAllImportsComplete();
-  }
+  };
 
-  private async onCompleteCitiesImport(count: number) {
+  private onCompleteCitiesImport = async (count: number)=> {
     console.info(`${count} cities imported.`);
     this.completedFiles++;
     await this.checkAllImportsComplete();
-  }
+  };
 
   private async saveOffer(offer: RentalOffer) {
     const facilities: string[] = [];
