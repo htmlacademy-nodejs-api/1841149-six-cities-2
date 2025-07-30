@@ -1,4 +1,4 @@
-import { MockServerData } from '../../types/index.js';
+import { City, MockServerData } from '../../types/index.js';
 import { generateRandomBoolean, generateRandomValue, getRandomItem, getRandomItems } from '../../helpers/index.js';
 import dayjs from 'dayjs';
 
@@ -18,12 +18,13 @@ const MIN_FACILITIES_NUMBER = 1;
 const MAX_FACILITIES_NUMBER = 8;
 
 export class TSVRentalOfferGenerator {
-  constructor(private readonly mockData: MockServerData) {}
+  constructor(private readonly mockData: MockServerData) {
+    console.log(this.mockData);
+  }
 
   public generate(): string {
     const name = getRandomItem<string>(this.mockData.names);
     const description = getRandomItem<string>(this.mockData.descriptions);
-    const city = getRandomItem<string>(this.mockData.cities);
     const imagePreview = getRandomItem<string>(this.mockData.imagePreviews);
     const photos = getRandomItems<string>(this.mockData.photos, PHOTOS_COUNT).join(';');
     const isPremium = generateRandomBoolean();
@@ -36,11 +37,15 @@ export class TSVRentalOfferGenerator {
     const facilities = getRandomItems<string>(this.mockData.facilities, generateRandomValue(MIN_FACILITIES_NUMBER, MAX_FACILITIES_NUMBER)).join(';');
     const commentsCount = 0;
     const author = Object.values(getRandomItem(this.mockData.authors)).join(';');
-    const coordinates = Object.values(this.mockData.coordinates[city]).join(';');
+    const coordinates = Object.values(getRandomItem(this.mockData.coordinates)).join(';');
 
     const publishDate = dayjs()
       .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')
       .toISOString();
+
+    const selectedCity = getRandomItem<City>(this.mockData.cities);
+    const city = `${selectedCity.name};${selectedCity.location.latitude};${selectedCity.location.longitude}`;
+
 
     return [
       name, description, publishDate, city, imagePreview, photos, isPremium, isFavourite, rating, type, roomNumber, guestNumber, price, facilities, author, commentsCount, coordinates

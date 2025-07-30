@@ -2,12 +2,13 @@ import { RentalOfferType } from './rental-offer-type.enum.js';
 import { FacilityType } from './facility-type.enum.js';
 import { Coordinates } from './coordinates.type.js';
 import { Author } from './author.type.js';
+import { City } from './city.interface.js';
 
 export type RentalOffer = {
   name: string;
   description: string;
   publishDate: Date;
-  city: string;
+  city: City;
   imagePreview: string;
   photos: string[];
   isPremium: boolean;

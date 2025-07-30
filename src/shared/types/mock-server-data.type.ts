@@ -1,13 +1,13 @@
-import { Author, Coordinates} from './index.js';
+import { Author, City, Coordinates } from './index.js';
 
 export type MockServerData = {
   names: string[],
   descriptions: string[],
-  cities: string[],
+  cities: City[],
   imagePreviews: string[],
   photos: string[],
   types: string[],
   facilities: string[],
   authors: Author[],
-  coordinates: Record<string, Coordinates>
+  coordinates: Coordinates[],
 }
