@@ -1,12 +1,21 @@
 import { Command } from './command.interface.js';
 import { MockServerData } from '../../shared/types/index.js';
-import { TSVRentalOfferGenerator } from '../../shared/libs/rental-offer-generator/index.js';
+import {
+  TSVRentalCitiesGenerator,
+  TSVRentalOfferGenerator,
+  TSVRentalTypesGenerator,
+  TSVRentalFacilitiesGenerator
+} from '../../shared/libs/rental-offer-generator/index.js';
 import { TSVFileWriter } from '../../shared/libs/file-writer/index.js';
 import { getErrorMessage } from '../../shared/helpers/index.js';
 import axios from 'axios';
 
 export class GenerateCommand implements Command {
   private initialData: MockServerData;
+  private facilitiesFilePath = './mocks/facilities.tsv';
+  private typesFilePath = './mocks/types.tsv';
+  private citiesFilePath = './mocks/cities.tsv';
+
 
   private async load(url: string) {
     try {
@@ -26,6 +35,27 @@ export class GenerateCommand implements Command {
     }
   }
 
+  private async writeFacilities() {
+    const tsvFacilitiesGenerator = new TSVRentalFacilitiesGenerator(this.initialData);
+    const tsvFileWriter = new TSVFileWriter(this.facilitiesFilePath);
+
+    await tsvFileWriter.write(tsvFacilitiesGenerator.generate());
+  }
+
+  private async writeTypes() {
+    const tsvTypesGenerator = new TSVRentalTypesGenerator(this.initialData);
+    const tsvFileWriter = new TSVFileWriter(this.typesFilePath);
+
+    await tsvFileWriter.write(tsvTypesGenerator.generate());
+  }
+
+  private async writeCities() {
+    const tsvCitiesGenerator = new TSVRentalCitiesGenerator(this.initialData);
+    const tsvFileWriter = new TSVFileWriter(this.citiesFilePath);
+
+    await tsvFileWriter.write(tsvCitiesGenerator.generate());
+  }
+
   public getName(): string {
     return '--generate';
   }
@@ -36,6 +66,9 @@ export class GenerateCommand implements Command {
 
     try {
       await this.load(url);
+      await this.writeFacilities();
+      await this.writeTypes();
+      await this.writeCities();
       await this.write(filepath, rentalOfferCount);
     } catch (error: unknown) {
       console.error('Can\'t generate data');

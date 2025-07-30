@@ -6,6 +6,7 @@
 /docs/
 /mocks/*.tsv
 .idea/*
+/uploads/
 
 .DS_Store
 coverage

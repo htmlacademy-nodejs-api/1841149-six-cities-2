@@ -1,4 +1,4 @@
-import { Author, Coordinates, FacilityType, RentalOffer, RentalOfferType, UserType } from '../types/index.js';
+import { Author, City, Coordinates, FacilityType, RentalOffer, RentalOfferType, UserType } from '../types/index.js';
 
 export function generateRentalOffer(rentalOfferData: string): RentalOffer {
   const [
@@ -22,12 +22,11 @@ export function generateRentalOffer(rentalOfferData: string): RentalOffer {
   ] = rentalOfferData.replace('\n', '').split('\t');
 
   const getAuthor = (authorString: string): Author => {
-    const [userName, email, avatar, password, userType] = authorString.split(';');
+    const [userName, email, avatar, userType] = authorString.split(';');
     return {
       name: userName,
       email,
       avatar,
-      password,
       userType: UserType[userType as UserType],
     };
   };
@@ -45,17 +44,29 @@ export function generateRentalOffer(rentalOfferData: string): RentalOffer {
     };
   };
 
+  const getCity = (cityString: string): City => {
+    const [cityName, location] = cityString.split(';');
+    const [longitude, latitude] = location.split(';');
+    return {
+      name: cityName,
+      location: {
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+      },
+    };
+  };
+
   return {
     name,
     description,
     publishDate: new Date(publishDate),
-    city,
+    city: getCity(city),
     imagePreview,
     photos: photos.split(';').map((photo) => photo),
     isPremium: Boolean(isPremium),
     isFavourite: Boolean(isFavourite),
     rating: parseFloat(Number(rating).toFixed(1)),
-    type: RentalOfferType[type as 'apartment' | 'house' | 'room' | 'hotel'],
+    type: RentalOfferType[type as 'Apartment' | 'House' | 'Room' | 'Hotel'],
     roomNumber: Number.parseInt(roomNumber, 10),
     guestNumber: Number.parseInt(guestNumber, 10),
     price: Number.parseInt(price, 10),

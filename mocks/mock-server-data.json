@@ -8,19 +8,55 @@
       "Бутик-отель в центре города"
     ],
     "descriptions": [
-      "Уютная студия в 10 минутах ходьбы от центра; с кондиционером; стиральной машиной и современным ремонтом.",
+      "Уютная студия в 10 минутах ходьбы от центра; с кондиционером и современным ремонтом.",
       "Просторный дом с 4 комнатами; частным садом и гаражом в тихом районе города. Идеально для семьи.",
       "Небольшая, но светлая и чистая комната с общей кухней; расположенная рядом с площадью.",
       "Двухкомнатная квартира с видом на канал; оборудована всем необходимым для комфортного проживания.",
       "Элегантный номер в отеле в историческом центре города."
     ],
     "cities": [
-      "Paris",
-      "Cologne",
-      "Brussels",
-      "Amsterdam",
-      "Hamburg",
-      "Dusseldorf"
+      {
+        "name": "Paris",
+        "location": {
+          "latitude": 48.85661,
+          "longitude": 2.351499
+        }
+      },
+      {
+        "name": "Brussels",
+        "location": {
+          "latitude": 50.846557,
+          "longitude": 4.351697
+        }
+      },
+      {
+        "name": "Cologne",
+        "location": {
+          "latitude": 50.938361,
+          "longitude": 6.959974
+        }
+      },
+      {
+        "name": "Dusseldorf",
+        "location": {
+          "latitude": 51.225402,
+          "longitude": 6.776314
+        }
+      },
+      {
+        "name": "Amsterdam",
+        "location": {
+          "latitude": 52.370216,
+          "longitude": 4.895168
+        }
+      },
+      {
+        "name": "Hamburg",
+        "location": {
+          "latitude": 53.550341,
+          "longitude": 10.000654
+        }
+      }
     ],
     "imagePreviews": [
       "eiffel-studio.jpg",
@@ -44,10 +80,10 @@
       "ap6.jpg"
     ],
     "types": [
-      "apartment",
-      "house",
-      "room",
-      "hotel"
+      "Apartment",
+      "House",
+      "Room",
+      "Hotel"
     ],
     "facilities": [
       "Breakfast",
@@ -63,63 +99,58 @@
         "name": "Жюль Мартен",
         "email": "jules.martin@example.com",
         "avatar": "jules.jpg",
-        "password": "paris123",
         "userType": "pro"
       },
       {
         "name": "Анна Беккер",
         "email": "anna.b@example.com",
         "avatar": "anna.png",
-        "password": "securePass",
         "userType": "default"
       },
       {
         "name": "Мишель Дюпон",
         "email": "michel.dup@example.com",
         "avatar": "dupon.png",
-        "password": "dupon1234",
         "userType": "default"
       },
       {
         "name": "Том Ван Дайк",
         "email": "tom.vd@example.com",
         "avatar": "tom.png",
-        "password": "canal789",
         "userType": "pro"
       },
       {
         "name": "Фридрих Мюллер",
         "email": "friedrich.m@example.com",
         "avatar": "mueller.jpg",
-        "password": "hburg123",
         "userType": "pro"
       }
     ],
-    "coordinates": {
-      "Paris": {
+    "coordinates": [
+      {
         "latitude": 48.85661,
         "longitude": 2.351499
       },
-      "Cologne": {
+      {
         "latitude": 50.938361,
         "longitude": 6.959974
       },
-      "Brussels": {
+      {
         "latitude": 50.846557,
         "longitude": 4.351697
       },
-      "Amsterdam": {
+      {
         "latitude": 52.370216,
         "longitude": 4.895168
       },
-      "Hamburg": {
+      {
         "latitude": 53.550341,
         "longitude": 10.000654
       },
-      "Dusseldorf": {
+      {
         "latitude": 51.225402,
         "longitude": 6.776314
       }
-    }
+    ]
   }
 }
