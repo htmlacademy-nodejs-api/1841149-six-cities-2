@@ -1,4 +1,4 @@
-openapi: "3.1.0"
+openapi: "3.0.3"
 info:
   title: API сервер для проект "Шесть городов"
   description: |-
@@ -159,6 +159,26 @@ paths:
       description: Загружает изображение аватара пользователя. Изображение
         аватара должно быть в формате `png` или `jpg`.
 
+      parameters:
+        - name: userID
+          in: path
+          required: true
+          description: ID пользователя
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Аватар успешно загружен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/avatar'
+        "400":
+          description: Ошибка в корректности данных
+        "401":
+          description: Ошибка аутентификации
+
   /offers:
     get:
       tags:
@@ -232,6 +252,14 @@ paths:
         Возвращает не более 3 премиальных предложений. <br>
         Список отсортирован по дате публикации (По убыванию)
 
+      parameters:
+        - name: city
+          in: path
+          required: true
+          description: ID города
+          schema:
+            type: string
+
       responses:
         "200":
           description: Массив объектов премиальных предложений.
@@ -253,6 +281,14 @@ paths:
         Возвращает 50 или меньше комментариев. <br>
         Сортировка по умолчанию от новых к старым
 
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+
       responses:
         "200":
           description: Массив объектов комментариев.
@@ -271,6 +307,14 @@ paths:
       description: Создать комментарий к предложению
       security:
         - BearerAuth: []
+
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
 
       requestBody:
         description: Информация для создания нового предложения.
@@ -301,6 +345,15 @@ paths:
       summary: Детальная информация по предложению
       description: Возвращает детальную информацию о выбранном предложении.
 
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+
+
       responses:
         "200":
           description: Детальная информация по предложению.
@@ -319,6 +372,15 @@ paths:
       description: Редактирует предложение созданное пользователем
       security:
         - BearerAuth: []
+
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+
 
       requestBody:
         description: Информация для редактирования нового предложения. Должно присутствовать хотя бы одно поле
@@ -353,6 +415,14 @@ paths:
       security:
         - BearerAuth: []
 
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+
       responses:
         "204":
           description: Предложение успешно удалено.
@@ -371,6 +441,28 @@ paths:
       description: Загружает первью для предложения. Изображение
         должно быть в формате `png` или `jpg`.
 
+
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Превью успешно загружено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offerPreview'
+        "400":
+          description: Ошибка в корректности данных
+        "401":
+          description: Ошибка аутентификации
+
+
   /offers/{offerId}/photos:
     post:
       tags:
@@ -378,6 +470,26 @@ paths:
       summary: Загрузить фотографий для предложения
       description: Загружает фотографий для предложения. Изображение
         должны быть в формате `png` или `jpg`.
+
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Фотографии успешно загружены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offerPhotos'
+        "400":
+          description: Ошибка в корректности данных
+        "401":
+          description: Ошибка аутентификации
 
   /types:
     get:
@@ -434,27 +546,27 @@ paths:
           description: Ошибка в корректности данных
 
   /favorite:
-      get:
-        tags:
-          - favorite
-        summary: Получить список избранных предложений
-        description: Получить список избранных предложений пользователя
-        security:
-          - BearerAuth: []
+    get:
+      tags:
+        - favorite
+      summary: Получить список избранных предложений
+      description: Получить список избранных предложений пользователя
+      security:
+        - BearerAuth: []
 
-        responses:
-          "200":
-            description: Массив объектов избранных предложений.
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/getFavorite'
+      responses:
+        "200":
+          description: Массив объектов избранных предложений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getFavorite'
 
-          "400":
-            description: Ошибка в корректности данных
+        "400":
+          description: Ошибка в корректности данных
 
-          "401":
-            description: Ошибка аутентификации
+        "401":
+          description: Ошибка аутентификации
 
   /favorite/{offerId}:
     post:
@@ -464,6 +576,14 @@ paths:
       description: Добавить выбранное предложение в избранное
       security:
         - BearerAuth: []
+
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
 
       responses:
         "200":
@@ -487,6 +607,14 @@ paths:
       security:
         - BearerAuth: []
 
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения
+          schema:
+            type: string
+
       responses:
         "204":
           description: Удаление предложения из избранного.
@@ -505,6 +633,43 @@ components:
       bearerFormat: JWT
 
   schemas:
+
+    avatar:
+      type: object
+
+      properties:
+        filepath:
+          type: string
+          description: Путь к файлу в репозитории
+          example: '7113c745-2027-435d-8d21-1b3c2978e1b9.png'
+
+    offerPhotos:
+      type: object
+      description: Фотографии предложения
+      properties:
+        photos:
+          type: array
+          description: Путь к файлам
+          example: [
+            "http://localhost:4000/upload/24965439-152d-42a2-9018-73e83d05a237.png",
+            "http://localhost:4000/upload/24965439-152d-42a2-9018-73e83d05a237.png",
+            "http://localhost:4000/upload/24965439-152d-42a2-9018-73e83d05a237.png",
+            "http://localhost:4000/upload/24965439-152d-42a2-9018-73e83d05a237.png",
+            "http://localhost:4000/upload/24965439-152d-42a2-9018-73e83d05a237.png",
+            "http://localhost:4000/upload/24965439-152d-42a2-9018-73e83d05a237.png"
+          ]
+          items:
+            type: string
+            format: uri
+
+    offerPreview:
+      type: object
+
+      properties:
+        imagePreview:
+          type: string
+          description: Путь к файлу в репозитории
+          example: 'http://localhost:4000/upload/1cc545c7-613f-4046-8906-43c7543cf2bc.png'
 
     createUser:
       type: object
@@ -889,26 +1054,26 @@ components:
           description: Дата публикации
           example: 12.06.2025
         city:
-            type: object
-            description: Город. Один из возможных вариант из справочника городов.
-            properties:
-              id:
-                type: number
-                description: ID города
-                example: 123
-              name:
-                type: string
-                description: Наименование города
-                example: Paris
-              location:
-                type: object
-                properties:
-                  latitude:
-                    type: number
-                    example: 50.2345
-                  longitude:
-                    type: number
-                    example: 50.2345
+          type: object
+          description: Город. Один из возможных вариант из справочника городов.
+          properties:
+            id:
+              type: number
+              description: ID города
+              example: 123
+            name:
+              type: string
+              description: Наименование города
+              example: Paris
+            location:
+              type: object
+              properties:
+                latitude:
+                  type: number
+                  example: 50.2345
+                longitude:
+                  type: number
+                  example: 50.2345
         imagePreview:
           type: string
           description: Ссылка на изображения для превью
